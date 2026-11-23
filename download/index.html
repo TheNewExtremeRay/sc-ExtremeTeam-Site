@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FractalScript — Downloads</title>
+<meta name="description" content="Downloads for FractalScript, an independently developed programming language with a custom execution environment. Release builds, file descriptions and installation notes.">
+<link rel="canonical" href="https://sc.extremeteam.online/downloads/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FractalScript">
+<meta property="og:title" content="FractalScript — Downloads">
+<meta property="og:description" content="Release builds, file descriptions and installation notes for FractalScript.">
+<meta property="og:url" content="https://sc.extremeteam.online/downloads/">
+<meta property="og:image" content="https://i.ibb.co/j9ch6W4f/Fractal-Script4.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FractalScript — Downloads">
+<meta name="twitter:description" content="Release builds, file descriptions and installation notes for FractalScript.">
+<meta name="twitter:image" content="https://i.ibb.co/j9ch6W4f/Fractal-Script4.png">
+<meta name="theme-color" content="#0A0D13">
+<link rel="icon" type="image/png" href="https://i.ibb.co/Tx0Xzg0j/Fractal-Script5.png">
+<style>
+:root{
+  --bg:#0A0D13;
+  --bg-alt:#0C1017;
+  --surface:#10141D;
+  --surface-2:#131926;
+  --line:rgba(148,163,184,.14);
+  --line-strong:rgba(148,163,184,.30);
+  --text:#E8ECF4;
+  --muted:#94A0B8;
+  --cyan:#40DDEB;
+  --blue:#3B87DC;
+  --purple:#8B6CE0;
+  --purple-soft:#A48AE8;
+  --green:#57B568;
+  --amber:#D9A441;
+  --radius:12px;
+  --radius-sm:8px;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Consolas,"Liberation Mono",monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;overflow-x:clip;
+}
+img{max-width:100%;display:block}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:4px}
+.container{max-width:980px;margin-inline:auto;padding-inline:clamp(20px,4vw,32px)}
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--cyan);color:#062a31;padding:10px 16px;border-radius:0 0 8px 0;font-weight:600;z-index:100}
+.skip-link:focus{left:0}
+
+/* ---------- Header ---------- */
+.site-header{position:sticky;top:0;z-index:50;background:rgba(10,13,19,.92);border-bottom:1px solid var(--line)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{display:inline-flex;align-items:center;gap:10px;color:var(--text);font-weight:700;font-size:1.02rem}
+.brand:hover{text-decoration:none}
+.brand img{width:26px;height:26px;border-radius:6px;object-fit:contain}
+.brand .accent{color:var(--purple-soft)}
+.site-nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+.site-nav a{display:block;padding:8px 12px;border-radius:8px;color:var(--muted);font-size:.92rem;font-weight:500}
+.site-nav a:hover{color:var(--text);background:var(--surface);text-decoration:none}
+@media (max-width:640px){
+  .header-inner{flex-wrap:wrap;height:auto;padding:10px 0 6px}
+  .site-nav{width:100%}
+  .site-nav ul{flex-wrap:wrap;gap:2px 4px}
+  .site-nav a{padding:7px 9px;font-size:.85rem}
+  .use-grid{grid-template-columns:1fr}
+  .release-files a{margin-left:0}
+}
+
+/* ---------- Page hero ---------- */
+.page-hero{padding:clamp(56px,8vw,88px) 0 clamp(40px,6vw,64px)}
+.page-hero .crumb{
+  font-family:var(--mono);font-size:.8rem;color:var(--muted);margin:0 0 18px;
+}
+.page-hero .crumb a{color:var(--cyan)}
+.page-hero h1{margin:0 0 14px;font-size:clamp(2rem,4.4vw,2.9rem);letter-spacing:-.02em;line-height:1.1}
+.page-hero .lede{margin:0;color:var(--muted);max-width:60ch;font-size:1.02rem}
+.status-chip{
+  display:inline-flex;align-items:center;gap:8px;margin-top:20px;
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;
+  border:1px dashed var(--line-strong);border-radius:999px;padding:6px 14px;color:var(--muted);
+}
+.status-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--amber)}
+
+/* ---------- Sections ---------- */
+.section{padding:clamp(40px,6vw,64px) 0}
+.section-alt{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.section-head{margin-bottom:clamp(24px,4vw,36px)}
+.section-head h2{margin:0 0 10px;font-size:clamp(1.4rem,3vw,1.8rem);letter-spacing:-.01em}
+.section-head p{margin:0;color:var(--muted);max-width:68ch}
+
+/* ---------- Release ---------- */
+.release{
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius);
+  padding:clamp(22px,3vw,30px);margin-bottom:18px;
+}
+.release.latest{border-color:rgba(164,138,232,.45);background:linear-gradient(180deg,rgba(139,108,224,.06),transparent 55%),var(--surface)}
+.release-top{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:12px}
+.release-top h3{margin:0;font-size:1.2rem;font-family:var(--mono)}
+.rel-tag{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  border-radius:999px;padding:4px 11px;
+}
+.rel-tag.latest{color:#fff;background:var(--purple)}
+.rel-tag.prev{color:var(--muted);border:1px solid var(--line-strong)}
+.release-meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:14px}
+.release-notes{margin:0;color:var(--muted);font-size:.94rem}
+.release-files{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.release-files li{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:12px 16px;font-family:var(--mono);font-size:.86rem;
+}
+.release-files .f-name{color:var(--text);overflow-wrap:anywhere}
+.release-files .f-desc{color:var(--muted);font-family:var(--sans);font-size:.84rem;flex:1;min-width:180px}
+.release-files a{
+  margin-left:auto;color:var(--cyan);font-weight:600;border:1px solid rgba(64,221,235,.4);
+  border-radius:7px;padding:6px 14px;white-space:nowrap;
+}
+.release-files a:hover{background:rgba(64,221,235,.08);text-decoration:none}
+
+.empty-state{
+  background:var(--surface);border:1px dashed var(--line-strong);border-radius:var(--radius);
+  padding:clamp(28px,4vw,44px);text-align:center;
+}
+.empty-state h3{margin:0 0 10px;font-size:1.1rem}
+.empty-state p{margin:0 auto 8px;color:var(--muted);max-width:56ch;font-size:.94rem}
+.empty-state code{font-family:var(--mono);color:var(--purple-soft);font-size:.9em}
+
+/* ---------- Cards ---------- */
+.use-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.use-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px}
+.use-card h3{margin:0 0 8px;font-size:1.02rem;display:flex;align-items:center;gap:10px}
+.use-card h3 svg{width:19px;height:19px;color:var(--purple-soft);flex:none}
+.use-card p{margin:0;color:var(--muted);font-size:.9rem}
+.use-card p + p{margin-top:8px}
+.use-card a{color:var(--cyan)}
+.faq-item{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px 22px;margin-bottom:14px}
+.faq-item h3{margin:0 0 6px;font-size:.98rem}
+.faq-item p{margin:0;color:var(--muted);font-size:.9rem}
+
+/* ---------- Footer ---------- */
+.site-footer{border-top:1px solid var(--line);padding:clamp(40px,6vw,56px) 0 30px;background:#090C11;margin-top:clamp(40px,6vw,72px)}
+.footer-top{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;justify-content:space-between;margin-bottom:clamp(28px,4vw,40px)}
+.return-link{
+  display:inline-flex;align-items:center;gap:9px;font-weight:650;font-size:.95rem;
+  color:var(--text);border:1px solid var(--line-strong);border-radius:var(--radius-sm);
+  padding:10px 18px;
+}
+.return-link:hover{border-color:var(--purple-soft);color:var(--purple-soft);text-decoration:none}
+.eco-links{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:.9rem}
+.eco-links a{color:var(--muted)}
+.eco-links a:hover{color:var(--purple-soft)}
+.footer-bottom{
+  padding-top:20px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;
+  color:var(--muted);font-size:.82rem;
+}
+
+/* ---------- Reveal ---------- */
+html.js [data-reveal]{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
+html.js [data-reveal].revealed{opacity:1;transform:none}
+@media (max-width:640px){
+  .use-grid{grid-template-columns:1fr}
+  .release-files a{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html.js [data-reveal]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="https://sc.extremeteam.online/">
+      <img src="https://i.ibb.co/Tx0Xzg0j/Fractal-Script5.png" alt="" width="26" height="26">
+      <span>Fractal&nbsp;<span class="accent">Script</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Downloads page navigation">
+      <ul>
+        <li><a href="https://sc.extremeteam.online/">Main site</a></li>
+        <li><a href="https://sc.extremeteam.online/#playground">Playground</a></li>
+        <li><a href="https://sc.extremeteam.online/#reference">Reference</a></li>
+        <li><a href="https://sv.extremeteam.online" target="_blank" rel="noopener">SafeView</a></li>
+        <li><a href="https://extremeteam.online" target="_blank" rel="noopener">ExtremeTeam</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <p class="crumb" data-reveal><a href="https://sc.extremeteam.online/">sc.extremeteam.online</a> / downloads</p>
+      <h1 data-reveal>Downloads</h1>
+      <p class="lede" data-reveal>Release builds, file descriptions and installation notes for FractalScript — an independently developed programming language with a custom execution environment, evolved from EzCode.</p>
+      <span class="status-chip" data-reveal><span class="dot" aria-hidden="true"></span>Release list managed in this page&rsquo;s source</span>
+    </div>
+  </section>
+
+  <section class="section" id="releases">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <h2>Available releases</h2>
+        <p>Only verified releases are listed here — no invented versions, file sizes, checksums or download counts. When a release is published, it is added to the page source and appears below automatically.</p>
+      </header>
+
+      <div id="release-list" data-reveal>
+        <noscript>
+          <article class="release latest">
+            <div class="release-top">
+              <h3>FractalScript 1.0.0</h3>
+              <span class="rel-tag latest">Latest</span>
+            </div>
+            <div class="release-meta"><span>2026-08-15</span><span>Python</span></div>
+            <p class="release-notes">First public release, published on GitHub Releases.</p>
+            <ul class="release-files">
+              <li><span class="f-name">FractalScript.zip</span><span class="f-desc">Release archive as published on GitHub Releases</span><a href="https://github.com/FractalLabsISAC/FractalScript/releases/download/1.0.0/FractalScript.zip" target="_blank" rel="noopener">Download</a></li>
+            </ul>
+          </article>
+        </noscript>
+        <div class="empty-state" hidden>
+          <h3>No release entries are defined</h3>
+          <p>No release entries are currently defined in the <code>RELEASES</code> constant in this file&rsquo;s source.</p>
+          <p>To publish one, add an entry — version, date, platform, file name, URL and notes — and it renders here as a proper release card. Nothing else needs to change.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="use-today">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <h2>What you can use today</h2>
+        <p>FractalScript does not need an installer to be explored — the language site ships a complete browser implementation of its documented feature set.</p>
+      </header>
+      <div class="use-grid">
+        <div class="use-card" data-reveal>
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 10l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Browser playground</h3>
+          <p>The main site&rsquo;s playground runs real FractalScript programs in your browser — tokenizer, parser, stepper, console, variable and grid state. Nothing to install, no backend, no account.</p>
+          <p><a href="https://sc.extremeteam.online/#playground">Open the playground →</a></p>
+        </div>
+        <div class="use-card" data-reveal>
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5.5c0 4.6-3.1 7.7-7 9.5-3.9-1.8-7-4.9-7-9.5V6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11.8l2.1 2.2L15.3 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Language documentation</h3>
+          <p>The complete documented surface — program structure, <span style="font-family:var(--mono)">Grid(16,16)</span>, the five Var operations, conditions, named loops, arithmetic and error behavior — is documented on the main site.</p>
+          <p><a href="https://sc.extremeteam.online/#reference">Read the reference →</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="installing">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <h2>Installation notes</h2>
+        <p>Installation steps are documented alongside each published release, not invented in advance.</p>
+      </header>
+      <div data-reveal>
+        <div class="faq-item">
+          <h3>How is a release installed?</h3>
+          <p>FractalScript&rsquo;s original environment is a Python application, and release 1.0.0 is published above as a single <span style="font-family:var(--mono)">.zip</span> archive. This page does not guess at package names, commands or system requirements — each release entry carries its own verified file description, and the project&rsquo;s sources remain authoritative for setup details.</p>
+        </div>
+        <div class="faq-item">
+          <h3>What is the difference between the playground and the original environment?</h3>
+          <p>The playground is this site&rsquo;s browser implementation of FractalScript&rsquo;s verified historical feature set, with concrete syntax bindings documented on the main site. The original environment is the project&rsquo;s own Python/Pygame application. The project&rsquo;s sources remain authoritative wherever they differ.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Does the Fractal VM have downloads here?</h3>
+          <p>The Fractal VM is a separate register-based prototype with its own <span style="font-family:var(--mono)">.frac</span> program format. It is an exploration project — not a complete production-ready virtual machine — and its artifacts, if any, will be described with their own verified release entries.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Questions about releases?</h3>
+          <p>Reach FractalLabs by email at <a href="mailto:fractallabsisac@gmail.com">fractallabsisac@gmail.com</a>, or explore the rest of the ecosystem: <a href="https://extremeteam.online" target="_blank" rel="noopener">ExtremeTeam</a>, <a href="https://sv.extremeteam.online" target="_blank" rel="noopener">Fractal SafeView</a> and <a href="https://launcher.extremeteam.online" target="_blank" rel="noopener">FractalLauncher</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="return-link" href="https://sc.extremeteam.online/">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M17 7L7 17M9 17h-2v-2M7 17h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 17h6a2 2 0 0 0 2-2v-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Return to the FractalScript website
+      </a>
+      <div class="eco-links">
+        <a href="https://extremeteam.online" target="_blank" rel="noopener">ExtremeTeam</a>
+        <a href="https://sv.extremeteam.online" target="_blank" rel="noopener">Fractal SafeView</a>
+        <a href="https://launcher.extremeteam.online" target="_blank" rel="noopener">FractalLauncher</a>
+        <a href="https://sc.extremeteam.online/" >Main site</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Fractal · ExtremeTeam</span>
+      <span>FractalScript — an exploration programming language</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   EDITABLE RELEASES — add real release entries here.
+
+   Each entry:
+   {
+     version: "1.0.0",            // exact version string
+     date:    "2026-01-15",       // release date (YYYY-MM-DD)
+     platform:"Windows",          // verified target platform
+     notes:   "First public release — …",
+     files: [
+       { name:"FractalScript-1.0.0.zip", desc:"Interpreter + examples", url:"https://…" }
+     ]
+   }
+
+   Rules: only add entries you can verify — no invented versions,
+   file sizes, checksums or download counts. Each file entry must
+   carry a real, working URL. Entries render as release cards
+   automatically; the newest entry (first in the array) is tagged
+   "Latest".
+   ============================================================ */
+var RELEASES = [
+  {
+    version:  "1.0.0",
+    date:     "2026-08-15",
+    platform: "Python",
+    notes:    "First public release, published on GitHub Releases.",
+    files: [
+      { name: "FractalScript.zip", desc: "Release archive as published on GitHub Releases", url: "https://github.com/FractalLabsISAC/FractalScript/releases/download/1.0.0/FractalScript.zip" }
+    ]
+  }
+];
+
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderReleases(){
+  var root = document.getElementById('release-list');
+  if (!root) return;
+  if (!RELEASES.length){
+    var es = root.querySelector('.empty-state');
+    if (es) es.hidden = false;
+    return;
+  }
+
+  var html = '';
+  RELEASES.forEach(function(rel, i){
+    var latest = i === 0;
+    html += '<article class="release' + (latest ? ' latest' : '') + '">'
+      +   '<div class="release-top">'
+      +     '<h3>FractalScript ' + escapeHtml(rel.version || '') + '</h3>'
+      +     '<span class="rel-tag ' + (latest ? 'latest' : 'prev') + '">' + (latest ? 'Latest' : 'Previous') + '</span>'
+      +   '</div>'
+      +   '<div class="release-meta">'
+      +     (rel.date ? '<span>' + escapeHtml(rel.date) + '</span>' : '')
+      +     (rel.platform ? '<span>' + escapeHtml(rel.platform) + '</span>' : '')
+      +   '</div>'
+      +   (rel.notes ? '<p class="release-notes">' + escapeHtml(rel.notes) + '</p>' : '');
+    if (rel.files && rel.files.length){
+      html += '<ul class="release-files">';
+      rel.files.forEach(function(f){
+        html += '<li>'
+          + '<span class="f-name">' + escapeHtml(f.name || 'file') + '</span>'
+          + (f.desc ? '<span class="f-desc">' + escapeHtml(f.desc) + '</span>' : '')
+          + '<a href="' + escapeHtml(f.url || '#') + '"' + (f.url && f.url.indexOf('http') === 0 ? ' target="_blank" rel="noopener"' : '') + '>Download</a>'
+          + '</li>';
+      });
+      html += '</ul>';
+    }
+    html += '</article>';
+  });
+  root.innerHTML = html;
+}
+
+renderReleases();
+
+/* ---------- Chrome ---------- */
+var yearEl = document.querySelector('[data-year]');
+if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+if (!reduceMotion && 'IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting){
+        entry.target.classList.add('revealed');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  revealEls.forEach(function(el){ io.observe(el); });
+} else {
+  revealEls.forEach(function(el){ el.classList.add('revealed'); });
+}
+
+})();
+</script>
+</body>
+</html>

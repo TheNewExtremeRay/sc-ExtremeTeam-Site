@@ -1,0 +1,2812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FractalScript — minimalist scripting language for pixel-grid games and text apps</title>
+<meta name="description" content="FractalScript is a minimalist scripting language for interactive pixel-grid games, text apps and libraries. Two formats — Grid and Text — named loops, keyboard input, an 18-color palette and a two-kind library system. Try the verified browser playground.">
+<link rel="canonical" href="https://sc.extremeteam.online/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FractalScript">
+<meta property="og:title" content="FractalScript — minimalist scripting language for pixel-grid games and text apps">
+<meta property="og:description" content="Grid programs paint an 18-color pixel grid at 60 fps, text apps drive a terminal loop at 30 fps — all from tiny .ez scripts. Run them live in the browser playground.">
+<meta property="og:url" content="https://sc.extremeteam.online/">
+<meta property="og:image" content="https://i.ibb.co/j9ch6W4f/Fractal-Script4.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FractalScript — minimalist scripting language for pixel-grid games and text apps">
+<meta name="twitter:description" content="Grid programs paint an 18-color pixel grid at 60 fps, text apps drive a terminal loop at 30 fps — all from tiny .ez scripts. Run them live in the browser playground.">
+<meta name="twitter:image" content="https://i.ibb.co/j9ch6W4f/Fractal-Script4.png">
+<meta name="theme-color" content="#0A0D13">
+<link rel="icon" type="image/png" href="https://i.ibb.co/Tx0Xzg0j/Fractal-Script5.png">
+<link rel="apple-touch-icon" href="https://i.ibb.co/Tx0Xzg0j/Fractal-Script5.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "FractalScript",
+  "url": "https://sc.extremeteam.online/",
+  "description": "FractalScript is a minimalist scripting language for interactive pixel-grid games, text apps and libraries, implemented in Python with Pygame. This site documents the 1.0.0 language and runs a verified JavaScript port of its engines in the browser.",
+  "about": { "@type": "ComputerLanguage", "name": "FractalScript" },
+  "publisher": { "@type": "Organization", "name": "ExtremeTeam", "url": "https://extremeteam.online" }
+}
+</script>
+<style>
+:root{
+  --bg:#0A0D13;
+  --bg-alt:#0C1017;
+  --surface:#10141D;
+  --surface-2:#131926;
+  --line:rgba(148,163,184,.14);
+  --line-strong:rgba(148,163,184,.30);
+  --text:#E8ECF4;
+  --muted:#94A0B8;
+  --cyan:#40DDEB;
+  --blue:#3B87DC;
+  --blue-deep:#2B6FBF;
+  --purple:#8B6CE0;
+  --purple-soft:#A48AE8;
+  --green:#57B568;
+  --amber:#D9A441;
+  --red:#E0655F;
+  --radius:12px;
+  --radius-sm:8px;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Consolas,"Liberation Mono",monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:86px}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:clip;
+}
+img{max-width:100%;display:block}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:4px}
+.container{max-width:1180px;margin-inline:auto;padding-inline:clamp(20px,4vw,32px)}
+.skip-link{
+  position:absolute;left:-9999px;top:0;background:var(--cyan);color:#062a31;
+  padding:10px 16px;border-radius:0 0 8px 0;font-weight:600;z-index:100;
+}
+.skip-link:focus{left:0}
+
+/* ---------- Header ---------- */
+.site-header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,13,19,.92);
+  border-bottom:1px solid var(--line);
+  transition:box-shadow .25s ease;
+}
+.site-header.scrolled{box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{display:inline-flex;align-items:center;gap:10px;color:var(--text);font-weight:700;font-size:1.02rem}
+.brand:hover{text-decoration:none}
+.brand img{width:26px;height:26px;border-radius:6px;object-fit:contain}
+.brand img.brand-full{height:30px;width:auto;max-width:200px;border-radius:0}
+.brand .accent{color:var(--purple-soft)}
+.site-nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;align-items:center}
+.site-nav a{
+  display:block;padding:8px 12px;border-radius:8px;color:var(--muted);
+  font-size:.92rem;font-weight:500;
+}
+.site-nav a:hover{color:var(--text);background:var(--surface);text-decoration:none}
+.site-nav a.nav-ext{color:var(--cyan)}
+.site-nav a.nav-ext svg{width:12px;height:12px;vertical-align:-1px;margin-left:5px}
+.nav-toggle{
+  display:none;align-items:center;justify-content:center;
+  width:42px;height:42px;border:1px solid var(--line-strong);border-radius:8px;
+  background:transparent;color:var(--text);cursor:pointer;
+}
+@media (max-width:920px){
+  .nav-toggle{display:inline-flex}
+  .site-nav{
+    position:absolute;top:64px;left:0;right:0;
+    background:var(--bg);border-bottom:1px solid var(--line);
+    display:none;padding:10px clamp(20px,4vw,32px) 18px;
+  }
+  .site-nav.open{display:block}
+  .site-nav ul{flex-direction:column;gap:2px;align-items:stretch}
+  .site-nav a{padding:11px 12px;font-size:1rem}
+}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:12px 22px;border-radius:var(--radius-sm);
+  font-weight:650;font-size:.98rem;border:1px solid transparent;
+  cursor:pointer;transition:transform .15s ease,background .15s ease,border-color .15s ease;
+  font-family:var(--sans);
+}
+.btn:hover{text-decoration:none;transform:translateY(-1px)}
+.btn-primary{background:var(--purple);color:#fff}
+.btn-primary:hover{background:#9a7ce8}
+.btn-ghost{border-color:var(--line-strong);color:var(--text);background:transparent}
+.btn-ghost:hover{border-color:var(--purple-soft);color:var(--purple-soft)}
+.btn-sm{padding:8px 14px;font-size:.86rem;border-radius:7px}
+
+/* ---------- Hero ---------- */
+.hero{padding:clamp(64px,9vw,104px) 0 clamp(56px,8vw,88px)}
+.hero-grid{
+  display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);
+  gap:clamp(32px,5vw,56px);align-items:center;
+}
+.hero-label{
+  font-family:var(--mono);font-size:.8rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--purple-soft);margin:0 0 18px;
+}
+.hero h1{
+  margin:0 0 16px;font-size:clamp(2.1rem,4.6vw,3.15rem);
+  line-height:1.12;letter-spacing:-.02em;font-weight:750;
+}
+.hero h1 .accent{color:var(--purple-soft)}
+.hero-lede{margin:0 0 28px;color:var(--muted);max-width:56ch;font-size:1.02rem}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:26px}
+.hero-note{margin:0;font-size:.85rem;color:var(--muted)}
+.hero-note a{color:var(--cyan)}
+
+/* ---------- Code windows ---------- */
+.code-win{
+  border:1px solid var(--line-strong);border-radius:var(--radius);
+  background:var(--surface);overflow:hidden;
+  box-shadow:0 24px 70px rgba(0,0,0,.42);
+}
+.cw-head{
+  display:flex;align-items:center;gap:12px;
+  padding:9px 14px;border-bottom:1px solid var(--line);background:var(--surface-2);
+}
+.cw-dots{display:flex;gap:6px}
+.cw-dots i{width:9px;height:9px;border-radius:50%;background:var(--line-strong)}
+.cw-dots i:first-child{background:#e0655f}
+.cw-dots i:nth-child(2){background:#d9a441}
+.cw-dots i:nth-child(3){background:#57b568}
+.cw-file{flex:1;min-width:0;font-family:var(--mono);font-size:.74rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cw-chip{
+  flex:none;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;
+  color:var(--green);border:1px solid rgba(87,181,104,.35);
+  padding:3px 9px;border-radius:999px;
+}
+pre.cw-body{
+  margin:0;padding:16px 18px;overflow:auto;
+  font-family:var(--mono);font-size:13.5px;line-height:1.6;
+  color:#C7D2E4;tab-size:2;
+}
+.tok-kw{color:var(--cyan);font-weight:600}
+.tok-bi{color:#5FA8E8}
+.tok-var{color:var(--purple-soft)}
+.tok-op{color:#C8A24A;font-weight:600}
+.tok-num{color:var(--amber)}
+.tok-str{color:var(--green)}
+.tok-pn{color:#8FA0BC}
+
+/* ---------- Sections ---------- */
+.section{padding:clamp(72px,10vw,116px) 0}
+.section-alt{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.section-head{max-width:800px;margin-bottom:clamp(36px,5vw,56px)}
+.section-label{
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--purple-soft);margin:0 0 12px;
+}
+.section-head h2{margin:0 0 14px;font-size:clamp(1.65rem,3.4vw,2.3rem);letter-spacing:-.015em;line-height:1.18}
+.section-lede{margin:0;color:var(--muted);font-size:1.02rem}
+section[id]{scroll-margin-top:86px}
+
+/* ---------- Intro ---------- */
+.intro-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:clamp(28px,4vw,48px);align-items:start}
+.intro-body p{color:var(--muted);max-width:64ch}
+.intro-body p + p{margin-top:14px}
+.intro-body b{color:var(--text);font-weight:600}
+.fact-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px 24px;
+}
+.fact-card + .fact-card{margin-top:16px}
+.fact-card h4{
+  margin:0 0 10px;font-family:var(--mono);font-size:.7rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+}
+.fact-card dl{margin:0;display:grid;gap:8px}
+.fact-card dt{font-size:.82rem;color:var(--muted)}
+.fact-card dd{margin:0;font-size:.9rem;color:var(--text)}
+.fact-card dd a{color:var(--cyan)}
+
+/* ---------- Overview ---------- */
+.overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ov-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px 24px;
+}
+.ov-card h3{margin:0 0 8px;font-size:1.02rem;display:flex;align-items:center;gap:10px}
+.ov-card h3 svg{width:19px;height:19px;color:var(--purple-soft);flex:none}
+.ov-card p{margin:0;color:var(--muted);font-size:.9rem}
+.ov-card code{font-family:var(--mono);font-size:.85em;color:var(--cyan)}
+
+/* ---------- Reference ---------- */
+.ref-grid{display:grid;grid-template-columns:230px minmax(0,1fr);gap:clamp(28px,4vw,52px);align-items:start}
+.ref-toc{position:sticky;top:96px}
+.ref-toc h4{
+  margin:0 0 12px;font-family:var(--mono);font-size:.7rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+}
+.ref-toc ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;border-left:1px solid var(--line)}
+.ref-toc a{
+  display:block;padding:6px 14px;color:var(--muted);font-size:.9rem;
+  border-left:2px solid transparent;margin-left:-1px;
+}
+.ref-toc a:hover{color:var(--text);text-decoration:none;border-left-color:var(--line-strong)}
+.ref-toc a.current{color:var(--purple-soft);border-left-color:var(--purple)}
+.binding-note{
+  border:1px dashed rgba(164,138,232,.45);background:rgba(139,108,224,.06);
+  border-radius:var(--radius-sm);padding:18px 22px;margin-bottom:clamp(30px,4vw,44px);
+}
+.binding-note h3{margin:0 0 8px;font-size:.95rem;color:var(--purple-soft)}
+.binding-note p{margin:0;color:var(--muted);font-size:.92rem}
+.ref-sec{margin-bottom:clamp(44px,6vw,64px)}
+.ref-sec:last-child{margin-bottom:0}
+.ref-sec h3{margin:0 0 6px;font-size:1.3rem;letter-spacing:-.01em}
+.ref-sec > p{margin:0 0 16px;color:var(--muted);max-width:68ch}
+.ref-sec h4{margin:22px 0 8px;font-size:.98rem;color:var(--text)}
+.ref-sec p{color:var(--muted)}
+.ref-table{
+  width:100%;border-collapse:collapse;margin:14px 0 6px;font-size:.9rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;
+}
+.ref-table th,.ref-table td{
+  text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+.ref-table tr:last-child td{border-bottom:none}
+.ref-table th{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;background:var(--surface-2);
+}
+.ref-table td:first-child{font-family:var(--mono);font-size:.84rem;color:var(--cyan);white-space:nowrap}
+.ref-table td:last-child{color:var(--muted)}
+.inline-code{font-family:var(--mono);font-size:.88em;color:var(--cyan);background:var(--surface-2);border:1px solid var(--line);border-radius:5px;padding:1px 7px;white-space:nowrap}
+
+/* ---------- Examples ---------- */
+.examples-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.example-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;display:flex;flex-direction:column;
+}
+.example-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.example-head h3{margin:0;font-size:1rem}
+.example-head .ex-file{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.example-desc{padding:13px 18px 0;color:var(--muted);font-size:.88rem;margin:0}
+.example-card pre.cw-body{border-radius:0}
+.example-actions{padding:12px 18px 16px;margin-top:auto}
+
+/* ---------- Playground ---------- */
+.pg-toolbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+  margin-bottom:16px;
+}
+.pg-select-wrap{display:flex;align-items:center;gap:10px;flex:1;min-width:220px}
+.pg-select-wrap label{font-size:.85rem;color:var(--muted);white-space:nowrap}
+.pg-select{
+  flex:1;min-width:0;max-width:320px;padding:9px 12px;
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius-sm);
+  color:var(--text);font-family:var(--mono);font-size:.88rem;cursor:pointer;
+}
+.pg-toolbar-actions{display:flex;gap:10px;flex-wrap:wrap}
+.pg-shell{
+  display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:16px;
+  border:1px solid var(--line-strong);border-radius:var(--radius);
+  background:var(--surface);padding:16px;
+  box-shadow:0 24px 70px rgba(0,0,0,.42);
+}
+.pg-editor{
+  display:grid;grid-template-columns:44px minmax(0,1fr);
+  border:1px solid var(--line-strong);border-radius:var(--radius-sm);
+  background:#0B0E15;overflow:hidden;min-height:430px;
+}
+.pg-gutter{
+  padding:14px 8px 14px 0;text-align:right;
+  font-family:var(--mono);font-size:13.5px;line-height:1.6;color:#54627e;
+  background:#0B0E15;border-right:1px solid var(--line);
+  overflow:hidden;user-select:none;white-space:pre;
+}
+.pg-codewrap{position:relative;min-width:0}
+.pg-hl{
+  margin:0;position:absolute;inset:0;padding:14px;overflow:hidden;
+  font-family:var(--mono);font-size:13.5px;line-height:1.6;color:#C7D2E4;
+  white-space:pre;pointer-events:none;tab-size:2;
+}
+.pg-input{
+  position:absolute;inset:0;width:100%;height:100%;
+  padding:14px;margin:0;border:none;outline:none;resize:none;
+  background:transparent;color:transparent;caret-color:var(--cyan);
+  font-family:var(--mono);font-size:13.5px;line-height:1.6;
+  white-space:pre;overflow:auto;tab-size:2;
+}
+.pg-right{display:flex;flex-direction:column;gap:12px;min-width:0}
+.pg-console{
+  flex:1;min-height:260px;max-height:430px;overflow:auto;
+  background:#0B0E15;border:1px solid var(--line-strong);border-radius:var(--radius-sm);
+  padding:14px;font-family:var(--mono);font-size:12.5px;line-height:1.7;
+}
+.pg-console-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 14px;border-bottom:1px solid var(--line);background:var(--surface-2);
+  border-radius:var(--radius-sm) var(--radius-sm) 0 0;
+}
+.cl-line{white-space:pre-wrap;overflow-wrap:anywhere}
+.cl-out{color:#D5DEEE}
+.cl-info{color:#5FA8E8}
+.cl-sys{color:#6B7A96;font-style:italic}
+.cl-err{color:var(--red)}
+.cl-halt{color:var(--amber)}
+.cl-placeholder{color:#54627e;font-style:italic}
+.pg-panels{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel{
+  background:#0B0E15;border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:12px 14px;min-height:74px;
+}
+.panel h4{
+  margin:0 0 8px;font-family:var(--mono);font-size:.64rem;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+}
+.panel .panel-empty{color:#54627e;font-size:.8rem;font-family:var(--mono);font-style:italic}
+.var-row{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:.8rem;padding:2px 0}
+.var-name{color:var(--purple-soft);overflow-wrap:anywhere}
+.var-val{color:#D5DEEE;text-align:right;overflow-wrap:anywhere}
+.grid-chip{
+  display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);
+  font-size:.8rem;color:var(--text);
+}
+.grid-chip .g-dot{width:8px;height:8px;border-radius:2px;background:var(--green)}
+.pg-status{
+  display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+  margin-top:14px;font-family:var(--mono);font-size:.8rem;color:var(--muted);
+}
+.status-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  border-radius:999px;padding:4px 14px;font-size:.76rem;letter-spacing:.05em;
+  border:1px solid var(--line-strong);color:var(--muted);
+}
+.status-pill .s-dot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.status-pill.run{border-color:rgba(64,221,235,.4);color:var(--cyan)}
+.status-pill.run .s-dot{background:var(--cyan);animation:sp-pulse 1.2s ease-in-out infinite}
+.status-pill.done{border-color:rgba(87,181,104,.4);color:var(--green)}
+.status-pill.done .s-dot{background:var(--green)}
+.status-pill.stopped{border-color:rgba(217,164,65,.4);color:var(--amber)}
+.status-pill.stopped .s-dot{background:var(--amber)}
+.status-pill.error{border-color:rgba(224,101,95,.4);color:var(--red)}
+.status-pill.error .s-dot{background:var(--red)}
+@keyframes sp-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.pg-limits{margin:10px 2px 0;font-size:.78rem;color:var(--muted)}
+.pg-limits code{font-family:var(--mono);color:var(--cyan)}
+
+/* ---------- Execution model ---------- */
+.model-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:clamp(30px,4vw,44px)}
+.model-step{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:18px 20px;position:relative;
+}
+.model-step .ms-n{
+  font-family:var(--mono);font-size:.72rem;color:var(--purple-soft);
+  letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:8px;
+}
+.model-step h3{margin:0 0 6px;font-size:1rem}
+.model-step p{margin:0;color:var(--muted);font-size:.88rem}
+.limits-table{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden}
+.limits-table th,.limits-table td{text-align:left;padding:10px 16px;border-bottom:1px solid var(--line)}
+.limits-table tr:last-child td{border-bottom:none}
+.limits-table th{font-family:var(--mono);font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+.limits-table td:first-child{color:var(--muted)}
+.limits-table td:last-child{font-family:var(--mono);font-size:.84rem;color:var(--cyan)}
+
+
+/* ---------- Playground extras ---------- */
+.pg-screen-block{display:flex;flex-direction:column;border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:#0B0E15;overflow:hidden}
+.pg-screen-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.pg-screen-head span{font-family:var(--mono);font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.pg-screen-meta{font-family:var(--mono);font-size:.68rem;color:#54627e;text-transform:none;letter-spacing:0}
+.pg-screen{position:relative;min-height:300px;padding:16px;display:flex;align-items:center;justify-content:center;overflow:auto;background:#05070B;outline:none}
+.pg-screen:focus-visible{box-shadow:inset 0 0 0 2px rgba(64,221,235,.45)}
+.pg-canvas{image-rendering:pixelated;max-width:100%;height:auto;background:#000;display:none;border:1px solid #161B26}
+.pg-textscreen{display:none;width:100%;min-height:260px;max-height:420px;overflow:auto;font-family:var(--mono);font-size:1.05rem;line-height:1.7;color:#EDEFF5;padding:10px 14px;white-space:pre-wrap}
+.pg-screen-idle{color:#54627e;font-family:var(--mono);font-size:.85rem;text-align:center;line-height:1.9}
+.pg-focus-tip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-family:var(--mono);font-size:.68rem;color:#54627e;background:rgba(11,14,21,.85);border:1px solid var(--line);border-radius:999px;padding:3px 12px;white-space:nowrap;pointer-events:none;opacity:.9}
+.pg-screen.focused .pg-focus-tip{opacity:.45}
+.pg-screen-block{flex:1;display:flex;flex-direction:column;min-height:0}
+.eng-row{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:.8rem;padding:2px 0}
+.eng-key{color:#54627e}
+.eng-val{color:#D5DEEE;text-align:right;overflow-wrap:anywhere}
+.badge-ship{font-family:var(--mono);font-size:.64rem;letter-spacing:.09em;color:var(--green);border:1px solid rgba(87,181,104,.4);border-radius:999px;padding:2px 9px;margin-left:auto;text-transform:uppercase}
+.color-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;margin-top:6px}
+.color-chip{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:8px 12px}
+.color-chip .swatch{width:22px;height:22px;border-radius:5px;border:1px solid rgba(255,255,255,.18);flex:none}
+.color-chip .cname{font-size:.82rem;color:var(--text)}
+.color-chip .cnum{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-left:auto}
+.zip-details{margin:22px auto 0;max-width:560px;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 18px}
+.zip-details summary{cursor:pointer;font-size:.86rem;color:var(--cyan)}
+.zip-list{margin:10px 0 4px;padding-left:20px;display:grid;gap:5px}
+.zip-list li{font-size:.84rem;color:var(--muted)}
+
+/* ---------- Downloads ---------- */
+.dl-card{
+  max-width:820px;margin-inline:auto;text-align:center;
+  background:linear-gradient(180deg,rgba(139,108,224,.07),transparent 60%),var(--surface);
+  border:1px solid var(--line-strong);border-radius:var(--radius);
+  padding:clamp(30px,5vw,50px);
+}
+.dl-card h2{margin:0 0 12px;font-size:clamp(1.5rem,3vw,2rem)}
+.dl-card p{margin:0 auto 24px;color:var(--muted);max-width:54ch}
+.dl-card .dl-actions{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center}
+.dl-card .dl-alt{margin:18px auto 0;font-size:.85rem;color:var(--muted)}
+
+/* ---------- Footer ---------- */
+.site-footer{border-top:1px solid var(--line);padding:clamp(44px,6vw,64px) 0 34px;background:#090C11}
+.footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:clamp(28px,4vw,48px)}
+.footer-brand p{color:var(--muted);font-size:.9rem;margin:12px 0 0;max-width:36ch}
+.footer-col h4{
+  margin:0 0 14px;font-family:var(--mono);font-size:.72rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+}
+.footer-col ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.footer-col a{color:var(--muted);font-size:.92rem}
+.footer-col a:hover{color:var(--purple-soft)}
+.footer-bottom{
+  margin-top:clamp(32px,5vw,44px);padding-top:22px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;
+  color:var(--muted);font-size:.82rem;
+}
+
+/* ---------- Reveal ---------- */
+html.js [data-reveal]{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+html.js [data-reveal].revealed{opacity:1;transform:none}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1024px){
+  .overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .model-flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:920px){
+  .hero-grid{grid-template-columns:minmax(0,1fr)}
+  .intro-grid{grid-template-columns:minmax(0,1fr)}
+  .ref-grid{grid-template-columns:minmax(0,1fr)}
+  .ref-toc{position:static;margin-bottom:28px}
+  .ref-toc ul{
+    display:flex;flex-wrap:wrap;gap:8px;border-left:none;
+  }
+  .ref-toc a{border:1px solid var(--line-strong);border-radius:999px;padding:6px 14px;margin-left:0}
+  .ref-toc a.current{border-color:var(--purple)}
+  .pg-shell{grid-template-columns:minmax(0,1fr)}
+  .footer-grid{grid-template-columns:minmax(0,1fr);gap:32px}
+}
+@media (max-width:640px){
+  .examples-grid{grid-template-columns:minmax(0,1fr)}
+  .overview-grid{grid-template-columns:minmax(0,1fr)}
+  .model-flow{grid-template-columns:minmax(0,1fr)}
+  .pg-panels{grid-template-columns:minmax(0,1fr)}
+  .pg-editor{min-height:340px}
+  .hero-actions .btn{flex:1;justify-content:center}
+  .ref-table,.limits-table{table-layout:fixed;width:100%}
+  .ref-table th,.ref-table td,.limits-table th,.limits-table td{overflow-wrap:anywhere}
+  .ref-table td:first-child{white-space:normal}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html.js [data-reveal]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="#top" aria-label="FractalScript — back to top">
+      <img class="brand-full" src="https://i.ibb.co/j9ch6W4f/Fractal-Script4.png" alt="FractalScript" height="30">
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Site navigation">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#language">Language</a></li>
+        <li><a href="#reference">Reference</a></li>
+        <li><a href="#examples">Examples</a></li>
+        <li><a href="#playground">Playground</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a class="nav-ext" href="https://sc.extremeteam.online/downloads/" target="_blank" rel="noopener">Downloads
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ============ Hero ============ -->
+  <section class="hero" id="top">
+    <div class="container hero-grid">
+      <div>
+        <p class="hero-label" data-reveal>Minimalist Scripting Language · An ExtremeRay Project</p>
+        <h1 data-reveal>Code with <span class="accent">FractalScript</span>.</h1>
+        <p class="hero-lede" data-reveal>A minimalist scripting language for interactive pixel-grid games, text apps and libraries. Grid programs paint an 18-color pixel grid at 60&nbsp;fps, text apps drive a terminal loop — all from tiny <span style="font-family:var(--mono)">.ez</span> scripts.</p>
+        <div class="hero-actions" data-reveal>
+          <a class="btn btn-primary" href="#playground">Open the playground</a>
+          <a class="btn btn-ghost" href="https://github.com/FractalLabsISAC/FractalScript/releases/download/1.0.0/FractalScript.zip" target="_blank" rel="noopener">Download FractalScript.zip</a>
+        </div>
+        <p class="hero-note" data-reveal>Everything below runs right here — the playground is a faithful port of the 1.0.0 engines. Part of the Fractal ecosystem, alongside <a href="https://sv.extremeteam.online" target="_blank" rel="noopener">Fractal SafeView</a>.</p>
+      </div>
+
+      <div data-reveal>
+        <div class="code-win">
+          <div class="cw-head">
+            <span class="cw-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="cw-file">Grid example4FractalScript.ez</span>
+            <span class="cw-chip">runs live below</span>
+          </div>
+          <pre class="cw-body" data-fs-code>Grid(16, 16)
+
+loop-IfRule
+  if ([keyboard] {press} = f) {
+    set (Grid[r5, c6] {1})
+  } else {
+    set (Grid[r1, c1, r16, c16] {5})
+  }
+loop-IfRule-end</pre>
+        </div>
+        <p style="margin:14px 4px 0;text-align:center;font-size:.8rem;color:var(--muted)">A shipped example, straight from the release zip. Press <b>F</b> on the playground screen to paint one cell red, release it to flood the grid green.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ About ============ -->
+  <section class="section section-alt" id="about">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="section-label">About</p>
+        <h2>A minimalist language for grid games and text apps</h2>
+        <p class="section-lede">FractalScript is a minimalist scripting language for interactive pixel-grid games, text apps and libraries — developed as an ExtremeRay project and implemented in Python with Pygame.</p>
+      </header>
+
+      <div class="intro-grid">
+        <div class="intro-body" data-reveal>
+          <p><b>Programs come in two formats.</b> <b>Grid</b> programs open with <b>Grid(width, height)</b> and paint an 18-color pixel grid — every frame, at 60 fps. <b>Text</b> programs open with <b>Text</b> and drive a terminal-style window at 30 fps with variables and output. Both are written as <b>.ez</b> files and built around the same core idea: named loops whose actions run every single frame.</p>
+          <p><b>Interaction is built in.</b> Scripts check the keyboard directly with <span style="font-family:var(--mono)">if ([keyboard] {press} = key)</span> and branch with <b>else-if</b> and <b>else</b>. Grid keys repeat while held (after a 0.5-second delay), text keys fire once per press — two input models tuned for their formats.</p>
+          <p><b>The language is extensible by design.</b> Python libraries drop into <span style="font-family:var(--mono)">libraries/</span> and get called via <span style="font-family:var(--mono)">call(Lib[name] {fn, args})</span>, while <b>.el</b> libraries (EzLibrary) define entirely new commands with a syntax template — after <span style="font-family:var(--mono)">import gridly.el</span>, commands like <span style="font-family:var(--mono)">FillCircle(8, 8, 5, 4)</span> become part of the language. The <b>ez</b> command-line tool runs scripts and installs .el libraries straight from a URL.</p>
+          <p>Version <b>1.0.0</b> is published on GitHub Releases as a zip containing the five runtime modules, the bundled libraries and three example scripts — the same programs you can run in the playground below.</p>
+        </div>
+        <div data-reveal>
+          <div class="fact-card">
+            <h4>Project facts</h4>
+            <dl>
+              <dt>Lineage</dt><dd>An ExtremeRay Project, 2025–2026</dd>
+              <dt>Implementation</dt><dd>Python 3.13+ · Pygame</dd>
+              <dt>Formats</dt><dd>Grid (.ez) · Text (.ez) · Libraries (.py / .el)</dd>
+              <dt>Runtime</dt><dd>runner.py · translator.py · selector.py · ez_cli.py</dd>
+              <dt>License</dt><dd><a href="https://spdx.org/licenses/MIT.html" target="_blank" rel="noopener">MIT</a></dd>
+            </dl>
+          </div>
+          <div class="fact-card">
+            <h4>Ecosystem</h4>
+            <dl>
+              <dt>Team</dt><dd><a href="https://extremeteam.online" target="_blank" rel="noopener">ExtremeTeam</a></dd>
+              <dt>Sibling project</dt><dd><a href="https://sv.extremeteam.online" target="_blank" rel="noopener">Fractal SafeView</a></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Language overview ============ -->
+  <section class="section" id="language">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="section-label">Language overview</p>
+        <h2>Two formats, one loop model</h2>
+        <p class="section-lede">Everything a FractalScript program does happens inside named loops that run frame after frame. Every feature below is documented in the reference — and executable in the playground.</p>
+      </header>
+
+      <div class="overview-grid">
+        <div class="ov-card" data-reveal>
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 9.3h16M9.3 4v16" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>Grid format</h3>
+          <p><code>Grid(16, 16)</code> opens a pixel grid of 18 named colors. <code>set (Grid[r5, c6] {1})</code> paints single cells or whole regions, 1-indexed by row and column.</p>
+        </div>
+        <div class="ov-card" data-reveal>
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 10l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Text format</h3>
+          <p>The <code>Text</code> header switches to a terminal-style window. <code>say ("Score: ||[Var] {Score}||")</code> writes interpolated output at 30 fps.</p>
+        </div>
+        <div class="ov-card" data-reveal>
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 12a8 8 0 1 1-3-6.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M17 2.5v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Named loops</h3>
+          <p><code>loop-Name</code> … <code>loop-Name-end</code> wraps every action. All executable code lives inside a loop, and every loop&rsquo;s actions run on each frame.</p>
+        </div>
+        <div class="ov-card" data-reveal>
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="19" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 11h1.5M9.5 11H11M14 11h1.5M17 11h1.5M7 14.5h10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Keyboard input</h3>
+          <p><code>if ([keyboard] {press} = f) { … }</code> reads the keyboard. Held grid keys auto-repeat after 0.5 s; text keys fire once per press.</p>
+        </div>
+        <div class="ov-card" data-reveal>
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14v16H5z M9 8h6M9 12h6M9 16h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Variables</h3>
+          <p>Five operations on named slots: <code>set (Var[Score] {create})</code>, <code>add(N)</code>, <code>rem(N)</code>, <code>set(N)</code> and <code>hold</code>.</p>
+        </div>
+        <div class="ov-card" data-reveal>
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h7v12H4zM13 6h7v6h-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13 16h7M16.5 14v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Libraries</h3>
+          <p><code>call(Lib[demo_utils] {greet, "World"})</code> runs Python; <code>import gridly.el</code> registers new commands from a syntax template.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Reference ============ -->
+  <section class="section section-alt" id="reference">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="section-label">Syntax &amp; language reference</p>
+        <h2>The complete 1.0.0 surface</h2>
+        <p class="section-lede">Every command in the language, exactly as the shipped engines implement it. All snippets are valid and runnable in the playground.</p>
+      </header>
+
+      <div class="ref-grid">
+        <aside class="ref-toc" data-reveal aria-label="Reference contents">
+          <h4>On this page</h4>
+          <ul id="ref-toc-list">
+            <li><a href="#ref-structure">Program structure</a></li>
+            <li><a href="#ref-grid">Grid commands</a></li>
+            <li><a href="#ref-text">Text commands</a></li>
+            <li><a href="#ref-vars">Variables</a></li>
+            <li><a href="#ref-keyboard">Keyboard</a></li>
+            <li><a href="#ref-colors">Colors</a></li>
+            <li><a href="#ref-libraries">Libraries</a></li>
+            <li><a href="#ref-errors">Errors</a></li>
+          </ul>
+        </aside>
+
+        <div class="ref-body">
+          <div class="binding-note" data-reveal>
+            <h3>About the syntax shown here</h3>
+            <p>This page documents the language <b>as implemented by the real 1.0.0 sources</b> — <span style="font-family:var(--mono)">runner.py</span> (grid) and <span style="font-family:var(--mono)">translator.py</span> (text) from the release zip. The playground below is a JavaScript port of those two engines, verified frame-by-frame against them, so what you read here is exactly what runs.</p>
+          </div>
+
+          <div class="ref-sec" id="ref-structure" data-reveal>
+            <h3>Program structure</h3>
+            <p>A program is a list of lines. <span class="inline-code">//</span> starts a comment (whole-line comments are ignored), and a trailing <span class="inline-code">.</span> is accepted as an optional end-of-line marker. Grid programs open with <span class="inline-code">Grid(W, H)</span>, text programs with <span class="inline-code">Text</span> — both outside any loop. Import lines may appear anywhere.</p>
+            <div class="code-win">
+              <div class="cw-head"><span class="cw-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="cw-file">structure.ez</span></div>
+              <pre class="cw-body" data-fs-code>// a grid program
+Grid(16, 16)
+import gridly.el
+
+loop-Main
+  set (Grid[r1, c1, r16, c16] {5}).
+loop-Main-end</pre>
+            </div>
+            <h4>Rules</h4>
+            <p><b>All executable code lives inside a named loop.</b> A command outside a loop stops the program with <span class="inline-code">Error: code outside of loop: …</span>, and every <span class="inline-code">loop-</span> needs its matching <span class="inline-code">-end</span> marker. Whitespace is free: indentation is a convention, not syntax.</p>
+          </div>
+
+          <div class="ref-sec" id="ref-grid" data-reveal>
+            <h3>Grid commands</h3>
+            <p>Grid programs run their loops at <b>60 frames per second</b> and render every cell as a solid color block. Coordinates are <b>1-indexed</b>: row 5, column 6 is written <span class="inline-code">r5, c6</span>.</p>
+            <table class="ref-table">
+              <thead><tr><th scope="col">Command</th><th scope="col">Behavior</th></tr></thead>
+              <tbody>
+                <tr><td>Grid(W, H)</td><td>Create a W×H grid of black (0) cells. Written once, outside the loops.</td></tr>
+                <tr><td>set (Grid[rN, cN] {C})</td><td>Set one cell to color C. Rows and columns are 1-indexed.</td></tr>
+                <tr><td>set (Grid[r1, c1, r2, c2] {C})</td><td>Fill the rectangle from (r1,c1) to (r2,c2), inclusive, with color C. Only plain color cells are overwritten.</td></tr>
+                <tr><td>set (Grid[rN, cN] {"path"})</td><td>Load an image file from disk into one cell (desktop runtime only — the browser playground has no filesystem and skips it).</td></tr>
+                <tr><td>call(Lib[Name] {Fn, args…})</td><td>Call a function from a loaded Python library.</td></tr>
+                <tr><td>import name.el</td><td>Load a .el command library — its commands become available to the rest of the parse.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="ref-sec" id="ref-text" data-reveal>
+            <h3>Text commands</h3>
+            <p>Text programs run at <b>30 frames per second</b> in a terminal-style window. <span class="inline-code">say</span> replaces the display with one line; pass <span class="inline-code">wait(ms)</span> to pause between beats.</p>
+            <table class="ref-table">
+              <thead><tr><th scope="col">Command</th><th scope="col">Behavior</th></tr></thead>
+              <tbody>
+                <tr><td>Text</td><td>Declare the text format (header, outside loops).</td></tr>
+                <tr><td>say ("text ||[Var] {Name}||")</td><td>Display one line, interpolating variables. The line stays until the next say.</td></tr>
+                <tr><td>wait(N)</td><td>Pause the whole program for N milliseconds while the window stays responsive. Text format only.</td></tr>
+                <tr><td>if ([Var] {Name} = VALUE) { … }</td><td>Branch while the variable equals VALUE (an integer). Fires every frame the condition holds.</td></tr>
+                <tr><td>call / import</td><td>Libraries work in text programs too — the bundled demo_utils greets, adds and rolls dice on cue.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="ref-sec" id="ref-vars" data-reveal>
+            <h3>Variables</h3>
+            <p>Variables are named integer slots, created on demand and shared by every loop. One command shape covers all five operations:</p>
+            <table class="ref-table">
+              <thead><tr><th scope="col">Operation</th><th scope="col">Form</th><th scope="col">Behavior</th></tr></thead>
+              <tbody>
+                <tr><td>create</td><td>set (Var[X] {create})</td><td>Create X with the value 0 (no-op if it already exists).</td></tr>
+                <tr><td>add</td><td>set (Var[X] {add(N)})</td><td>Add N to the current value.</td></tr>
+                <tr><td>rem</td><td>set (Var[X] {rem(N)})</td><td>Subtract N from the current value.</td></tr>
+                <tr><td>set</td><td>set (Var[X] {set(N)})</td><td>Replace the value with N.</td></tr>
+                <tr><td>hold</td><td>set (Var[X] {hold})</td><td>Keep the current value — an explicit no-op.</td></tr>
+              </tbody>
+            </table>
+            <p>Variables live in <b>both formats</b>: grid programs can count key presses, and text programs read them back inside <span class="inline-code">say</span> with the <span class="inline-code">||[Var] {Name}||</span> interpolation.</p>
+            <div class="code-win">
+              <div class="cw-head"><span class="cw-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="cw-file">vars.ez</span></div>
+              <pre class="cw-body" data-fs-code>Text
+
+loop-Counter
+  set (Var[Score] {create}).
+  if ([keyboard] {press} = z) {
+    set (Var[Score] {add(1)}).
+    say ("Score: ||[Var] {Score}||")
+  } else {
+    set (Var[Score] {hold}).
+  }
+loop-Counter-end</pre>
+            </div>
+          </div>
+
+          <div class="ref-sec" id="ref-keyboard" data-reveal>
+            <h3>Keyboard</h3>
+            <p>The branch header is <span class="inline-code">if ([keyboard] {press} = key) {</span>, continued by <span class="inline-code">} else-if (…) {</span> and <span class="inline-code">} else {</span> and closed with <span class="inline-code">}</span>. The <b>first matching branch runs, at most one per frame</b> — if a branch fired, the else branch is skipped even when its own condition would hold.</p>
+            <p><b>Key names are single characters</b> — the letters <span class="inline-code">a</span>–<span class="inline-code">z</span> and digits <span class="inline-code">0</span>–<span class="inline-code">9</span>. The engines look keys up as Pygame&rsquo;s <span class="inline-code">K_a</span> … <span class="inline-code">K_9</span> constants, and those are the only constants that match this way: longer names parse without error but never fire.</p>
+            <table class="ref-table">
+              <thead><tr><th scope="col">Format</th><th scope="col">While a key is held</th></tr></thead>
+              <tbody>
+                <tr><td>Grid (60 fps)</td><td>The branch fires on the initial press, pauses 0.5&nbsp;s, then auto-repeats every 0.01&nbsp;s — hold-to-paint behavior.</td></tr>
+                <tr><td>Text (30 fps)</td><td>The branch fires once per press — edge-triggered, made for menus and counters.</td></tr>
+              </tbody>
+            </table>
+            <p>Because branches run inside frame loops, the else branch runs on <b>every frame the if doesn&rsquo;t fire</b> — the classic shipped example floods the grid green exactly while F isn&rsquo;t being (re)triggered, and paints its red cell whenever it is.</p>
+          </div>
+
+          <div class="ref-sec" id="ref-colors" data-reveal>
+            <h3>Colors</h3>
+            <p>Cell colors are numbers 0–17, mapped to this fixed palette by <span class="inline-code">runner.py</span>:</p>
+            <div class="color-grid" data-reveal>
+              <div class="color-chip"><span class="swatch" style="background:#000000"></span><span class="cname">Black</span><span class="cnum">0</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#DC1414"></span><span class="cname">Red</span><span class="cnum">1</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#F5A000"></span><span class="cname">Orange</span><span class="cnum">2</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#FFE600"></span><span class="cname">Yellow</span><span class="cnum">3</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#80FF00"></span><span class="cname">Lime</span><span class="cnum">4</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#00B400"></span><span class="cname">Green</span><span class="cnum">5</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#006400"></span><span class="cname">Dark Green</span><span class="cnum">6</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#64B4FF"></span><span class="cname">Light Blue</span><span class="cnum">7</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#00E6E6"></span><span class="cname">Cyan</span><span class="cnum">8</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#003CDC"></span><span class="cname">Blue</span><span class="cnum">9</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#0000A0"></span><span class="cname">Dark Blue</span><span class="cnum">10</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#DC00DC"></span><span class="cname">Magenta</span><span class="cnum">11</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#8C28DC"></span><span class="cname">Purple</span><span class="cnum">12</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#DC3278"></span><span class="cname">Dark Pink</span><span class="cnum">13</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#FF96B4"></span><span class="cname">Pink</span><span class="cnum">14</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#FFC8D2"></span><span class="cname">Light Pink</span><span class="cnum">15</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#505050"></span><span class="cname">Dark Gray</span><span class="cnum">16</span></div>
+              <div class="color-chip"><span class="swatch" style="background:#F0F0F0"></span><span class="cname">White</span><span class="cnum">17</span></div>
+            </div>
+          </div>
+
+          <div class="ref-sec" id="ref-libraries" data-reveal>
+            <h3>Libraries</h3>
+            <p>Two kinds of library extend the language, and three ship with the release:</p>
+            <h4>.py libraries — plain Python via call()</h4>
+            <p>Drop a Python file into <span class="inline-code">libraries/</span> and call its functions from any loop. The bundled <span class="inline-code">demo_utils.py</span> provides <span class="inline-code">greet</span>, <span class="inline-code">add</span>, <span class="inline-code">multiply</span>, <span class="inline-code">circle_area</span> and <span class="inline-code">roll_dice</span>:</p>
+            <div class="code-win">
+              <div class="cw-head"><span class="cw-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="cw-file">call.ez</span></div>
+              <pre class="cw-body" data-fs-code>import demo_utils.py
+
+loop-Demo
+  call(Lib[demo_utils] {greet, "World"})
+loop-Demo-end</pre>
+            </div>
+            <h4>.el libraries — new commands from a syntax template</h4>
+            <p>An EzLibrary (<span class="inline-code">.el</span>) declares commands with a <span class="inline-code">Syntax</span> template and Python <span class="inline-code">Func</span> code. After the import, template commands are part of the language — <span class="inline-code">{param}</span> slots capture the arguments:</p>
+            <div class="code-win">
+              <div class="cw-head"><span class="cw-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="cw-file">gridly.el — bundled in the zip</span></div>
+              <pre class="cw-body" data-fs-code>Def {
+  Library.name: "Gridly"
+  Library.version: v1.0
+  Package.identifier: "fractalscript.lib.gridly"
+  Library.bypass: true
+}
+
+Cmd {
+  Syntax: 'FillCircle({centerRow}, {centerCol}, {radius}, {color})'
+  Func: '
+    set_global("fill_circle", [int(centerRow)-1, int(centerCol)-1,
+                               int(radius), int(color)])'
+}</pre>
+            </div>
+            <h4>Bundled libraries</h4>
+            <table class="ref-table">
+              <thead><tr><th scope="col">Library</th><th scope="col">Kind</th><th scope="col">Provides</th></tr></thead>
+              <tbody>
+                <tr><td>gridly.el</td><td>.el commands</td><td>GridResize, SetCell, FillRegion, ClearGrid, DrawOutline, Checkerboard, DrawBorder, FillCircle, DrawLine, FillGradient, GridOverlayOn, GridOverlayOff</td></tr>
+                <tr><td>gitfetch.el</td><td>.el commands</td><td>Fetch(url) InDIR(path), FetchRaw(url) — download files from a URL</td></tr>
+                <tr><td>demo_utils.py</td><td>.py functions</td><td>greet, add, multiply, circle_area, roll_dice</td></tr>
+              </tbody>
+            </table>
+            <p>The <b>ez</b> command manages it all: <span class="inline-code">ez run "script.ez"</span> auto-detects the format, <span class="inline-code">ez lib "https://…/lib.el"</span> installs a library from a URL, <span class="inline-code">ez libs</span> lists what&rsquo;s installed. The full authoring guide (<span class="inline-code">LIBRARY_MAKING.md</span>) ships in the zip.</p>
+            <p><b>In the playground</b>, the three bundled libraries are built in and import exactly as they do on disk — including their syntax templates. Other .el files report the engines&rsquo; usual not-found message.</p>
+          </div>
+
+          <div class="ref-sec" id="ref-errors" data-reveal>
+            <h3>Errors &amp; messages</h3>
+            <p>The engines talk plainly. These are the exact strings the real runtime prints — the playground reproduces them verbatim:</p>
+            <table class="ref-table">
+              <thead><tr><th scope="col">Message</th><th scope="col">When</th></tr></thead>
+              <tbody>
+                <tr><td>Error: code outside of loop: …</td><td>A command appears outside any loop (grid parse).</td></tr>
+                <tr><td>Error: loop-NAME already open!</td><td>A second <span class="inline-code">loop-NAME</span> opens before the first one closed.</td></tr>
+                <tr><td>Error: loop-NAME-end without matching start!</td><td>An end marker with no loop behind it.</td></tr>
+                <tr><td>Error: loop-NAME missing loop-NAME-end!</td><td>The file ends with the loop still open (grid).</td></tr>
+                <tr><td>Error: loop 'NAME' missing end marker</td><td>Same, in text format.</td></tr>
+                <tr><td>Warning: Unknown command: …</td><td>A line matches nothing — the program keeps running (grid format).</td></tr>
+              </tbody>
+            </table>
+            <p>On top of the language, the <b>playground adds safety caps</b> a desktop app doesn&rsquo;t need: grids are limited to 64×64, the console keeps 500 lines, programs can&rsquo;t touch your filesystem (image cells are skipped with a note), and only the bundled libraries can be imported.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Examples ============ -->
+  <section class="section" id="examples">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="section-label">Examples</p>
+        <h2>Real programs, ready to run</h2>
+        <p class="section-lede">The first three programs are shipped verbatim in the release zip&rsquo;s Example4FractalScript folder — the same files <span style="font-family:var(--mono)">ez run</span> opens on the desktop. Every card loads straight into the playground.</p>
+      </header>
+
+      <div class="examples-grid" id="examples-grid">
+        <div class="example-card" data-reveal>
+          <div class="example-head">
+            <h3>Grid basics</h3>
+            <span class="ex-file">Grid example4FractalScript.ez</span>
+            <span class="badge-ship">shipped</span>
+          </div>
+          <p class="example-desc">The shipped grid tutorial — one red cell on F, a green flood otherwise, with the author&rsquo;s own comments.</p>
+          <pre class="cw-body" data-fs-code data-example-src="grid_shipped"></pre>
+          <div class="example-actions"><button class="btn btn-ghost btn-sm" type="button" data-load-example="grid_shipped">Load into playground</button></div>
+        </div>
+
+        <div class="example-card" data-reveal>
+          <div class="example-head">
+            <h3>Text &amp; variables</h3>
+            <span class="ex-file">Text example4FractalScript.ez</span>
+            <span class="badge-ship">shipped</span>
+          </div>
+          <p class="example-desc">The shipped text tutorial — count Z presses in a variable and say it back with interpolation.</p>
+          <pre class="cw-body" data-fs-code data-example-src="text_shipped"></pre>
+          <div class="example-actions"><button class="btn btn-ghost btn-sm" type="button" data-load-example="text_shipped">Load into playground</button></div>
+        </div>
+
+        <div class="example-card" data-reveal>
+          <div class="example-head">
+            <h3>Gridly library demo</h3>
+            <span class="ex-file">Gridly-Library example4FractalScript.ez</span>
+            <span class="badge-ship">shipped</span>
+          </div>
+          <p class="example-desc">The shipped .el demo — gradients, checkerboards, circles, outlines and borders from gridly.el.</p>
+          <pre class="cw-body" data-fs-code data-example-src="gridly_shipped"></pre>
+          <div class="example-actions"><button class="btn btn-ghost btn-sm" type="button" data-load-example="gridly_shipped">Load into playground</button></div>
+        </div>
+
+        <div class="example-card" data-reveal>
+          <div class="example-head">
+            <h3>Color bars</h3>
+            <span class="ex-file">color_bars.ez</span>
+          </div>
+          <p class="example-desc">Paints six bars from the fixed palette — press P to paint, X to clear. Regions and else-if in a few lines.</p>
+          <pre class="cw-body" data-fs-code data-example-src="bars"></pre>
+          <div class="example-actions"><button class="btn btn-ghost btn-sm" type="button" data-load-example="bars">Load into playground</button></div>
+        </div>
+
+        <div class="example-card" data-reveal>
+          <div class="example-head">
+            <h3>Step counter</h3>
+            <span class="ex-file">step_counter.ez</span>
+          </div>
+          <p class="example-desc">A text app — count S presses, and hit a one-time milestone at ten with a variable check.</p>
+          <pre class="cw-body" data-fs-code data-example-src="counter"></pre>
+          <div class="example-actions"><button class="btn btn-ghost btn-sm" type="button" data-load-example="counter">Load into playground</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Playground ============ -->
+  <section class="section section-alt" id="playground">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="section-label">Interactive playground</p>
+        <h2>Run FractalScript right now</h2>
+        <p class="section-lede">A faithful port of the 1.0.0 engines, running entirely in this page. Write a <span style="font-family:var(--mono)">.ez</span> program, press Run, click the screen and use your keyboard — grid programs render to a live pixel grid, text programs drive the terminal display.</p>
+      </header>
+
+      <div data-reveal>
+        <div class="pg-toolbar">
+          <div class="pg-select-wrap">
+            <label for="pg-example">Example</label>
+            <select class="pg-select" id="pg-example">
+              <option value="">— choose an example —</option>
+              <option value="grid_shipped">Grid example4FractalScript.ez · shipped</option>
+              <option value="text_shipped">Text example4FractalScript.ez · shipped</option>
+              <option value="gridly_shipped">Gridly-Library example4FractalScript.ez · shipped</option>
+              <option value="bars">color_bars.ez · palette + regions</option>
+              <option value="counter">step_counter.ez · text + variables</option>
+            </select>
+          </div>
+          <div class="pg-toolbar-actions">
+            <button id="pg-run" class="btn btn-primary btn-sm" type="button">Run</button>
+            <button id="pg-stop" class="btn btn-ghost btn-sm" type="button" disabled>Stop</button>
+            <button id="pg-clear" class="btn btn-ghost btn-sm" type="button">Clear editor</button>
+          </div>
+        </div>
+
+        <div class="pg-shell">
+          <div class="pg-editor">
+            <div class="pg-gutter" id="pg-gutter" aria-hidden="true">1</div>
+            <div class="pg-codewrap">
+              <pre class="pg-hl" id="pg-hl" aria-hidden="true"><code id="pg-hl-code"></code></pre>
+              <textarea class="pg-input" id="pg-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="FractalScript code editor"></textarea>
+            </div>
+          </div>
+
+          <div class="pg-right">
+            <div class="pg-screen-block">
+              <div class="pg-screen-head">
+                <span>Screen</span>
+                <span class="pg-screen-meta" id="pg-screen-meta"></span>
+              </div>
+              <div class="pg-screen" id="pg-screen" tabindex="0" aria-label="FractalScript program screen — click to focus, then press the keys your program checks">
+                <canvas class="pg-canvas" id="pg-canvas" width="640" height="640"></canvas>
+                <div class="pg-textscreen" id="pg-textscreen"></div>
+                <div class="pg-screen-idle" id="pg-screen-idle">the program&rsquo;s window opens here<br>grid programs render a live pixel grid · text programs display their latest line</div>
+                <div class="pg-focus-tip" id="pg-focus-tip">click the screen, then press the keys your program checks</div>
+              </div>
+            </div>
+
+            <div class="pg-console-block">
+              <div class="pg-console-head">
+                <span>Console</span>
+                <button class="pg-clear-btn" id="pg-clear-console" type="button">Clear</button>
+              </div>
+              <div class="pg-console" id="pg-console" role="log" aria-live="polite">
+                <div class="cl-line cl-placeholder">Engine output appears here when you run a program.</div>
+              </div>
+            </div>
+
+            <div class="pg-panels">
+              <div class="panel">
+                <h4>Variables</h4>
+                <div id="pg-vars"><div class="panel-empty">no variables yet</div></div>
+              </div>
+              <div class="panel">
+                <h4>Engine</h4>
+                <div id="pg-engine"><div class="panel-empty">no program running</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pg-status">
+          <span class="status-pill" id="pg-pill"><span class="s-dot" aria-hidden="true"></span><span id="pg-pill-text">Idle</span></span>
+          <span id="pg-meta"></span>
+          <span class="pg-limits">Sandboxed: the program text never touches <code>eval</code> or <code>Function</code>. Caps: 64×64 grid · 500 console lines · no filesystem (image cells are skipped) · bundled libraries only. <code>Ctrl</code>+<code>Enter</code> runs.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ How it works ============ -->
+  <section class="section" id="how">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="section-label">Under the hood</p>
+        <h2>From source text to pixel grid</h2>
+        <p class="section-lede">The desktop runtime is five Python modules. The playground is a JavaScript port of the two engines behind them — same grammar, same timings, same messages.</p>
+      </header>
+
+      <div class="model-flow">
+        <div class="model-step" data-reveal>
+          <span class="ms-n">Step 1</span>
+          <h3>Parse</h3>
+          <p><span style="font-family:var(--mono)">translate_file</span> reads the program line by line — comments and trailing dots stripped, <span style="font-family:var(--mono)">Grid(W, H)</span> or <span style="font-family:var(--mono)">Text</span> selects the engine.</p>
+        </div>
+        <div class="model-step" data-reveal>
+          <span class="ms-n">Step 2</span>
+          <h3>Register</h3>
+          <p>Commands compile into per-loop action lists; keyboard checks become if-chains; <span style="font-family:var(--mono)">.el</span> syntax templates register as new command matchers.</p>
+        </div>
+        <div class="model-step" data-reveal>
+          <span class="ms-n">Step 3</span>
+          <h3>Loop</h3>
+          <p>Every frame, <span style="font-family:var(--mono)">run_loops</span> executes every loop&rsquo;s actions in order — 60 fps for grid (hold-repeat keys), 30 fps for text (edge-triggered keys, <span style="font-family:var(--mono)">wait()</span>).</p>
+        </div>
+        <div class="model-step" data-reveal>
+          <span class="ms-n">Step 4</span>
+          <h3>Render</h3>
+          <p><span style="font-family:var(--mono)">draw_grid</span> paints each cell from the fixed 18-color palette onto the window — the playground mirrors it on a canvas, cell for cell.</p>
+        </div>
+      </div>
+
+      <div class="intro-grid">
+        <div class="intro-body" data-reveal>
+          <p><b>The port is verified, not approximated.</b> Before shipping this page, the browser engine and the real Python engines were run side by side on the same programs with scripted key schedules — the shipped examples, the gridly shape demo, region fills, key-repeat timing, multi-loop programs, text counters with <span style="font-family:var(--mono)">wait()</span>, and the engines&rsquo; error paths. After every run, the full grid state, variables and console output had to match <b>cell for cell, line for line</b>.</p>
+          <p><b>What differs is only the sandbox.</b> A browser tab has no filesystem and no window manager: image cells are skipped with a note, the grid caps at 64×64, and only the three bundled libraries are available for import. Everything else — parsing, timings, palette, messages — is the engine as released.</p>
+        </div>
+        <div data-reveal>
+          <div class="fact-card">
+            <h4>Port verification</h4>
+            <dl>
+              <dt>Test programs</dt><dd>19 scripted runs, both formats</dd>
+              <dt>Compared</dt><dd>Grid cells · variables · console lines</dd>
+              <dt>Grid timing</dt><dd>Frame-exact (fake 60 fps clock)</dd>
+              <dt>Text timing</dt><dd>Outcome-exact (real 30 fps clock)</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Downloads ============ -->
+  <section class="section section-alt" id="downloads">
+    <div class="container">
+      <div class="dl-card" data-reveal>
+        <h2>Downloads</h2>
+        <p>Version 1.0.0 — the full runtime: five Python modules, three bundled libraries, the ez CLI and three example programs. Portable zip — extract it, install Pygame, and run.</p>
+        <div class="dl-actions">
+          <a class="btn btn-primary" href="https://github.com/FractalLabsISAC/FractalScript/releases/download/1.0.0/FractalScript.zip" target="_blank" rel="noopener">Download FractalScript.zip</a>
+          <a class="btn btn-ghost" href="https://sc.extremeteam.online/downloads/" >All releases</a>
+        </div>
+        <p class="dl-alt">Requires <b>Python 3.13+</b> and <b>Pygame</b> (<span style="font-family:var(--mono)">pip install pygame</span>). Run with <span style="font-family:var(--mono)">ez run "Example4FractalScript/Grid example4FractalScript.ez"</span> — or just try it above, no install needed.</p>
+        <details class="zip-details">
+          <summary>What&rsquo;s inside the zip</summary>
+          <ul class="zip-list">
+            <li><span style="font-family:var(--mono)">runner.py</span> — grid format engine (60 fps)</li>
+            <li><span style="font-family:var(--mono)">translator.py</span> — text format engine (30 fps)</li>
+            <li><span style="font-family:var(--mono)">selector.py</span> — smart launcher, auto-detects the format</li>
+            <li><span style="font-family:var(--mono)">ez_cli.py</span> · <span style="font-family:var(--mono)">ez.bat</span> — the ez command</li>
+            <li><span style="font-family:var(--mono)">el_compiler.py</span> — .el library compiler</li>
+            <li><span style="font-family:var(--mono)">library_handler.py</span> — library loader</li>
+            <li><span style="font-family:var(--mono)">runtime.py</span> — library access to the engine internals</li>
+            <li><span style="font-family:var(--mono)">libraries/</span> — gridly.el · gitfetch.el · demo_utils.py</li>
+            <li><span style="font-family:var(--mono)">Example4FractalScript/</span> — three example programs</li>
+            <li><span style="font-family:var(--mono)">README.md</span> · <span style="font-family:var(--mono)">LIBRARY_MAKING.md</span></li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#top">
+          <img src="https://i.ibb.co/j9ch6W4f/Fractal-Script4.png" alt="FractalScript" height="26">
+        </a>
+        <p>A minimalist scripting language for pixel-grid games, text apps and libraries. An ExtremeRay Project.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Language</h4>
+        <ul>
+          <li><a href="#reference">Language reference</a></li>
+          <li><a href="#examples">Examples</a></li>
+          <li><a href="#playground">Playground</a></li>
+          <li><a href="#how">How it works</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Project</h4>
+        <ul>
+          <li><a href="https://github.com/FractalLabsISAC/FractalScript" target="_blank" rel="noopener">GitHub repository</a></li>
+          <li><a href="https://sc.extremeteam.online/downloads/" >Downloads</a></li>
+          <li><a href="https://extremeteam.online" target="_blank" rel="noopener">ExtremeTeam</a></li>
+          <li><a href="https://sv.extremeteam.online" target="_blank" rel="noopener">Fractal SafeView</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> ExtremeTeam · FractalScript is MIT licensed</span>
+      <span>Site and playground are independent of, and complementary to, the desktop runtime.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/*
+ * FractalScript browser engine — a faithful JavaScript port of the real
+ * FractalScript 1.0.0 interpreter sources:
+ *
+ *   runner.py     (grid format engine, 60 fps, key-hold repeat 0.50 s / 0.01 s)
+ *   translator.py (text format engine, 30 fps, edge-triggered keys)
+ *   selector.py   (Grid / Text auto-detection, first 10 lines)
+ *   el_compiler.py + library_handler.py (.el command libraries)
+ *   libraries/gridly.el, libraries/gitfetch.el, libraries/demo_utils.py
+ *
+ * Parse and run semantics, error messages, timings and the bundled libraries
+ * are ported 1:1 from those files. The only additions are playground safety
+ * limits (grid size cap, console cap) and browser shims where the desktop
+ * runtime touches Pygame windows or the filesystem.
+ *
+ * No eval, no Function constructor — programs are parsed into closures.
+ */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) { module.exports = factory(); }
+  else { root.FSEngine = factory(); }
+}(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  /* ---------- palette (runner.py colors dict) ---------- */
+  var COLORS = {
+    0: [0, 0, 0], 1: [220, 20, 20], 2: [245, 160, 0], 3: [255, 230, 0],
+    4: [128, 255, 0], 5: [0, 180, 0], 6: [0, 100, 0], 7: [100, 180, 255],
+    8: [0, 230, 230], 9: [0, 60, 220], 10: [0, 0, 160], 11: [220, 0, 220],
+    12: [140, 40, 220], 13: [220, 50, 120], 14: [255, 150, 180],
+    15: [255, 200, 210], 16: [80, 80, 80], 17: [240, 240, 240]
+  };
+  var COLOR_NAMES = {
+    0: 'Black', 1: 'Red', 2: 'Orange', 3: 'Yellow', 4: 'Lime', 5: 'Green',
+    6: 'Dark Green', 7: 'Light Blue', 8: 'Cyan', 9: 'Blue', 10: 'Dark Blue',
+    11: 'Magenta', 12: 'Purple', 13: 'Dark Pink', 14: 'Pink', 15: 'Light Pink',
+    16: 'Dark Gray', 17: 'White'
+  };
+
+  /* ---------- key names accepted by the engines ----------
+   * runner.py / translator.py look up `getattr(pygame, "K_" + key, None)`.
+   * The only lowercase K_ constants in pygame are K_a..K_z (plus K_0..K_9),
+   * so in the real 1.0.0 engines only single letters and digits ever match;
+   * multi-char names (space, left, return...) parse fine but never fire. */
+  function isValidKey(tok) { return /^[a-z0-9]$/.test(tok); }
+
+  /* ---------- helpers mirroring the Python sources ---------- */
+  function toInt(s) {
+    var t = String(s).trim();
+    if (!/^[-+]?\d+$/.test(t)) throw new Error("invalid literal for int() with base 10: '" + s + "'");
+    return parseInt(t, 10);
+  }
+  function isFloatStr(s) { return /^[-+]?(\d+\.\d*|\.\d+)([eE][-+]?\d+)?$|^[+-]?\d+[eE][-+]?\d+$/.test(String(s).trim()); }
+  function toFloat(s) { var v = parseFloat(String(s).trim()); if (isNaN(v)) throw new Error("could not convert string to float: '" + s + "'"); return v; }
+  function parseLibCallArgs(argsStr) { /* runner.py _parse_lib_call_args */
+    var parts = argsStr.split(',');
+    if (!parts.length) return [];
+    var parsed = [];
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i].trim();
+      if (!p) continue;
+      if ((p.charAt(0) === '"' && p.charAt(p.length - 1) === '"') ||
+          (p.charAt(0) === "'" && p.charAt(p.length - 1) === "'")) parsed.push(p.slice(1, -1));
+      else if (/^[-+]?\d+$/.test(p)) parsed.push(parseInt(p, 10));
+      else if (isFloatStr(p)) parsed.push(toFloat(p));
+      else parsed.push(p);
+    }
+    return parsed;
+  }
+
+  /* ---------- bundled .el library sources (verbatim from the release) ---------- */
+  var GRIDLY_EL = [
+    '// ============================================================',
+    '//  gridly.el — Grid Tools for FractalScript (Bypass Mode)',
+    '// ============================================================',
+    'Def {',
+    '  Library.name: "Gridly"',
+    '  Library.version: v1.0',
+    '  Package.identifier: "fractalscript.lib.gridly"',
+    '  Library.bypass: true',
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'GridResize({size})'",
+    "  Func: 'set_global(\"cell_size\", clamp(int(size), 5, 200))'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'SetCell({row}, {col}, {color})'",
+    "  Func: 'set_global(\"set_cell\", [int(row)-1, int(col)-1, int(color)])'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'FillRegion({r1}, {c1}, {r2}, {c2}, {color})'",
+    "  Func: 'set_global(\"fill_region\", [int(r1)-1, int(c1)-1, int(r2)-1, int(c2)-1, int(color)])'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'ClearGrid({color})'",
+    "  Func: 'set_global(\"clear_grid\", [int(color)])'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'DrawOutline({r1}, {c1}, {r2}, {c2}, {color})'",
+    "  Func: 'set_global(\"outline\", [int(r1)-1, int(c1)-1, int(r2)-1, int(c2)-1, int(color)])'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'Checkerboard({r1}, {c1}, {r2}, {c2}, {color1}, {color2})'",
+    "  Func: 'set_global(\"checkerboard\", [int(r1)-1, int(c1)-1, int(r2)-1, int(c2)-1, int(color1), int(color2)])'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'DrawBorder({r1}, {c1}, {r2}, {c2}, {color}, {thickness})'",
+    "  Func: 'set_global(\"border\", [int(r1)-1, int(c1)-1, int(r2)-1, int(c2)-1, int(color), int(thickness)])'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'FillCircle({centerRow}, {centerCol}, {radius}, {color})'",
+    "  Func: 'set_global(\"fill_circle\", [int(centerRow)-1, int(centerCol)-1, int(radius), int(color)])'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'DrawLine({r1}, {c1}, {r2}, {c2}, {color})'",
+    "  Func: 'set_global(\"fill_line\", [int(r1)-1, int(c1)-1, int(r2)-1, int(c2)-1, int(color)])'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'FillGradient({r1}, {c1}, {r2}, {c2}, {colorStart}, {colorEnd})'",
+    "  Func: 'set_global(\"fill_gradient\", [int(r1)-1, int(c1)-1, int(r2)-1, int(c2)-1, int(colorStart), int(colorEnd)])'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'GridOverlayOn'",
+    "  Func: 'runtime.set_override(\"draw_grid\", overlay_draw)'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'GridOverlayOff'",
+    "  Func: 'runtime.clear_override(\"draw_grid\")'",
+    '}'
+  ].join('\n');
+
+  var GITFETCH_EL = [
+    '// ============================================================',
+    '//  gitfetch.el — GitHub File Downloader',
+    '// ============================================================',
+    'Def {',
+    '  Library.name: "GitFetch"',
+    '  Library.version: v1.0',
+    '  Package.identifier: "project1.fractalscript.gitfetch"',
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'Fetch(\"{url}\") InDIR(\"{path}\")'",
+    "  Func: 'fetch_to_file(url, path)'",
+    '}',
+    '',
+    "Cmd {",
+    "  Syntax: 'FetchRaw(\"{url}\")'",
+    "  Func: 'fetch_to_file(url, \".\")'",
+    '}'
+  ].join('\n');
+
+  /* ---------- .el compiler (port of el_compiler.py) ---------- */
+  function stripComment(line) { /* el_compiler._strip_comment */
+    var inStr = false, q = null;
+    for (var i = 0; i < line.length; i++) {
+      var c = line.charAt(i);
+      if (inStr) { if (c === q) inStr = false; }
+      else if (c === '"' || c === "'") { inStr = true; q = c; }
+      else if (c === '/' && i + 1 < line.length && line.charAt(i + 1) === '/') return line.slice(0, i).replace(/\s+$/, '');
+    }
+    return line;
+  }
+  function readBlockLines(lines, start) { /* el_compiler._read_block_lines */
+    var depth = 1, body = [], i = start;
+    while (i < lines.length && depth > 0) {
+      var raw = lines[i];
+      var opens = (raw.match(/\{/g) || []).length;
+      var closes = (raw.match(/\}/g) || []).length;
+      depth += opens - closes;
+      if (depth > 0) body.push(raw);
+      i++;
+    }
+    if (depth !== 0) throw new Error('Unmatched braces');
+    return [body, i];
+  }
+  function parseBlockBody(bodyLines) { /* el_compiler._parse_block_body */
+    var result = {}, currentKey = null, currentVal = [], inMultiline = false, mq = null;
+    for (var i = 0; i < bodyLines.length; i++) {
+      var line = bodyLines[i];
+      if (inMultiline) {
+        currentVal.push(line);
+        var st = line.replace(/^\s+|\s+$/g, '');
+        if (endsWith(st, mq) || endsWith(st, mq + ')')) inMultiline = false;
+        continue;
+      }
+      var m = /^\s*(\w[\w.]*)\s*:\s*(.*)/.exec(line);
+      if (m) {
+        if (currentKey !== null) result[currentKey] = currentVal.join('\n').replace(/^\s+|\s+$/g, '');
+        currentKey = m[1];
+        var val = m[2].replace(/^\s+|\s+$/g, '');
+        currentVal = [val];
+        if (val.charAt(0) === "'" || val.charAt(0) === '"') {
+          mq = val.charAt(0);
+          if (val.slice(1).indexOf(mq) === -1) inMultiline = true;
+        }
+      } else if (currentKey !== null) currentVal.push(line);
+    }
+    if (currentKey !== null) result[currentKey] = currentVal.join('\n').replace(/^\s+|\s+$/g, '');
+    for (var k in result) {
+      var v = result[k];
+      if ((v.charAt(0) === '"' && v.charAt(v.length - 1) === '"') ||
+          (v.charAt(0) === "'" && v.charAt(v.length - 1) === "'")) v = v.slice(1, -1);
+      if (k === 'Func' && v.indexOf('\n') !== -1) {
+        var ls = v.split('\n').filter(function (l) { return l.replace(/^\s+|\s+$/g, ''); });
+        v = ls.join('\n');
+      }
+      result[k] = v;
+    }
+    return result;
+  }
+  function endsWith(s, suf) { if (suf == null) return false; return s.length >= suf.length && s.slice(-suf.length) === suf; }
+  function parseElText(text) { /* el_compiler.parse_el_file */
+    var rawLines = text.split(/\r\n|\r|\n/);
+    var cleaned = [], inFuncBlock = false, funcQuote = null;
+    for (var i = 0; i < rawLines.length; i++) {
+      var line = rawLines[i];
+      var strippedForCheck = line.replace(/^\s+|\s+$/g, '');
+      if (!inFuncBlock) {
+        var km = /^\s*(\w[\w.]*)\s*:\s*(['"])/.exec(line);
+        if (km) {
+          funcQuote = km[2];
+          var valStart = line.slice(km.index + km[0].length);
+          if (valStart.indexOf(funcQuote) === -1) inFuncBlock = true;
+        }
+        line = stripComment(line);
+      } else {
+        if (endsWith(strippedForCheck, funcQuote) || endsWith(strippedForCheck, funcQuote + ')')) {
+          inFuncBlock = false; funcQuote = null;
+        }
+      }
+      if (line.replace(/^\s+|\s+$/g, '')) cleaned.push(line);
+    }
+    var defInfo = { name: '', version: '', package: '', bypass: false };
+    var cmds = [], j = 0;
+    while (j < cleaned.length) {
+      var ln = cleaned[j].replace(/^\s+|\s+$/g, '');
+      if (ln === 'Def {' || ln === 'Def{') {
+        var r1 = readBlockLines(cleaned, j + 1);
+        var p1 = parseBlockBody(r1[0]);
+        defInfo = {
+          name: p1['Library.name'] || '', version: p1['Library.version'] || '',
+          package: p1['Package.identifier'] || '',
+          bypass: String(p1['Library.bypass'] || '').toLowerCase() === 'true'
+        };
+        j = r1[1]; continue;
+      }
+      if (ln === 'Cmd {' || ln === 'Cmd{') {
+        var r2 = readBlockLines(cleaned, j + 1);
+        var p2 = parseBlockBody(r2[0]);
+        if (p2['Syntax']) cmds.push({ syntax: p2['Syntax'], func: p2['Func'] });
+        j = r2[1]; continue;
+      }
+      j++;
+    }
+    return [defInfo, cmds];
+  }
+  function extractParams(syntaxTemplate, commandLine) { /* el_compiler.extract_params */
+    var normalized = syntaxTemplate.replace(/"\{(\w+)\}"/g, '{$1}').replace(/'\{(\w+)\}'/g, '{$1}');
+    var regexStr = '', paramNames = [], i = 0;
+    while (i < normalized.length) {
+      if (normalized.charAt(i) === '{') {
+        var end = normalized.indexOf('}', i);
+        if (end !== -1) {
+          var name = normalized.slice(i + 1, end);
+          if (name) {
+            paramNames.push(name);
+            regexStr += '(?:"([^"]*)"|\'([^\']*)\'|([^\\s()]+))';
+            i = end + 1; continue;
+          }
+        }
+      }
+      regexStr += normalized.charAt(i).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      i++;
+    }
+    regexStr += '$';
+    var m = new RegExp(regexStr).exec(commandLine);
+    if (!m) return null;
+    var result = {}, gi = 1;
+    for (var p = 0; p < paramNames.length; p++) {
+      for (var g = gi; g < gi + 3; g++) {
+        if (g < m.length && m[g] !== undefined && m[g] !== null) { result[paramNames[p]] = m[g]; break; }
+      }
+      gi += 3;
+    }
+    return result;
+  }
+
+  /* ---------- FSEngine ---------- */
+  function Engine(opts) {
+    opts = opts || {};
+    this.mode = opts.mode || null;            // 'grid' | 'text' (or null until detected)
+    this.now = opts.now || function () { return Date.now(); };
+    this.onLine = opts.onLine || function () {};
+    this.maxGrid = opts.maxGrid || 64;        // playground safety cap
+    this.maxConsole = opts.maxConsole || 500;
+
+    this.consoleLines = [];
+    this.variables = {};
+    this.loopBlocks = {};                     // name -> {actions:[...], open:bool}
+    this.grid = [];                           // rows of ints / rgb arrays
+    this.gridW = 0; this.gridH = 0;
+    this.cellSize = 40;
+    this.overlay = false;                     // gridly GridOverlayOn
+    this.textLines = [];                      // translator.py text_lines
+    this.frameCount = 0;
+    this.running = false;
+    this.held = {};                           // token -> true (UI / tests set this)
+    this.keyHoldTimes = {};                   // grid hold-repeat state
+    this.keyStates = {};                      // text edge-trigger state
+    this.waitUntil = 0; this.resume = null;   // wait() support (text)
+    this.registeredCommands = [];             // from .el libraries
+    this.loadedLibs = [];
+    this.elLoaded = {};
+    this.pyLoaded = {};
+    this.overrides = [];                      // elc.GLOBAL_OVERRIDES
+    this._lastFrame = -1;
+    this._frameInterval = 1000 / 60;
+    this._imgWarned = false;
+    this._err = null;
+    this._halted = false;
+  }
+
+  Engine.COLORS = COLORS;
+  Engine.COLOR_NAMES = COLOR_NAMES;
+  Engine.isValidKey = isValidKey;
+
+  /* browser key event -> the single-character token the engines understand */
+  Engine.keyTokenFromEvent = function (e) {
+    var k = e.key !== undefined ? e.key : '';
+    if (k.length === 1) return k.toLowerCase();
+    switch (k) {
+      case 'ArrowLeft': return 'left';
+      case 'ArrowRight': return 'right';
+      case 'ArrowUp': return 'up';
+      case 'ArrowDown': return 'down';
+      case 'Enter': return 'return';
+      case 'Escape': return 'escape';
+      case 'Tab': return 'tab';
+      case 'Backspace': return 'backspace';
+      case 'Delete': return 'delete';
+      case 'Shift': return 'shift';
+      case 'Control': return 'ctrl';
+      case 'Alt': return 'alt';
+      case 'Meta': return 'meta';
+      default: return k.toLowerCase();
+    }
+  };
+
+  Engine.prototype.out = function (t) { this._log('out', t); };
+  Engine.prototype.warn = function (t) { this._log('warn', t); };
+  Engine.prototype.err = function (t) { this._log('error', t); };
+  Engine.prototype._log = function (type, t) {
+    if (this.consoleLines.length >= this.maxConsole) return;
+    this.consoleLines.push({ type: type, text: t });
+    try { this.onLine(type, t); } catch (e) {}
+  };
+
+  /* selector.py auto-detection: first 10 lines */
+  Engine.detectMode = function (src) {
+    var lines = src.split(/\r\n|\r|\n/);
+    for (var i = 0; i < Math.min(10, lines.length); i++) {
+      var line = lines[i];
+      if (line.indexOf('Grid') !== -1) return 'grid';
+      if (line.indexOf('loop-') !== -1 || line.indexOf('if ') !== -1) return 'text';
+      if (line.indexOf('Text') !== -1) return 'text';
+    }
+    return null;
+  };
+
+  /* banner both engines print on startup */
+  Engine.prototype.printBanner = function () {
+    this.out('FractalScript, An ExtremeRay Project, 2025-2026');
+    this.out('For more info, please refer to https://ezcode.unaux.com');
+    this.out('');
+  };
+
+  /* ---------------- library system (library_handler.py port) ---------------- */
+  Engine.prototype._findLib = function (name) {
+    if (name === 'gridly') return { type: 'el', text: GRIDLY_EL };
+    if (name === 'gitfetch') return { type: 'el', text: GITFETCH_EL };
+    if (name === 'demo_utils') return { type: 'py' };
+    return null;
+  };
+
+  Engine.prototype.loadLibrary = function (name) { /* library_handler.load */
+    if (this.elLoaded[name]) return this.elLoaded[name];
+    if (this.pyLoaded[name]) return this.pyLoaded[name];
+    var found = this._findLib(name);
+    if (!found) { this.out("[LIB] Library '" + name + "' not found (checked .py and .el)"); return null; }
+    if (found.type === 'py') {
+      var mod = this._demoUtilsModule();
+      this.pyLoaded[name] = mod;
+      this.loadedLibs.push(name);
+      this.out("[LIB] Loaded Python library: " + name);
+      return mod;
+    }
+    var parsed = parseElText(found.text);          // el_compiler.parse_el_file
+    var defInfo = parsed[0], cmds = parsed[1];
+    var data = { info: defInfo, commands: [] };
+    if (!cmds.length) {
+      this.out("[LIB] .el file '" + name + "' has no commands (empty or wrong format)");
+      this.elLoaded[name] = data;
+      return data;
+    }
+    for (var i = 0; i < cmds.length; i++) {
+      var c = cmds[i];
+      var nameMatch = /^\w+/.exec(c.syntax);
+      var cmd = {
+        syntax: c.syntax, func: c.func,
+        name: nameMatch ? nameMatch[0] : 'unknown',
+        params: (c.syntax.match(/\{(\w+)\}/g) || []).map(function (s) { return s.slice(1, -1); }),
+        lib: name,
+        bypass: defInfo.bypass
+      };
+      cmd.impl = this._elImpl(name, cmd.name);     // native implementation of the Func code
+      data.commands.push(cmd);
+      this.registeredCommands.push(cmd);
+    }
+    this.elLoaded[name] = data;
+    this.loadedLibs.push(name);
+    this.out("[LIB] Loaded .el library: " + name + " (" + data.commands.length + " commands registered)");
+    return data;
+  };
+
+  Engine.prototype.doImport = function (libName) { /* runner._do_import */
+    var name = String(libName).toLowerCase();
+    if (name.slice(-3) === '.el') name = name.slice(0, -3);
+    else if (name.slice(-3) === '.py') name = name.slice(0, -3);
+    var result = this.loadLibrary(name);
+    if (result !== null && result !== undefined) this.out('[IMPORT] Loaded library: ' + name);
+    return result;
+  };
+
+  /* native equivalents of the bundled libraries' Func code */
+  Engine.prototype._elImpl = function (lib, cmdName) {
+    var eng = this;
+    function g(k, v) { eng.overrides.push({ key: k, value: v }); }  // set_global()
+    function errTo(cmd, fn) {
+      return function (p) {
+        try { fn(p); }
+        catch (e) { eng.out(cmd + ' error: ' + e.message); }
+      };
+    }
+    if (lib === 'gridly') {
+      switch (cmdName) {
+        case 'GridResize': return errTo('GridResize', function (p) {
+          var px = toInt(p.size);
+          if (px < 5) px = 5;
+          if (px > 200) px = 200;
+          g('cell_size', px);
+          eng.out('Grid cell size: ' + px + 'px');
+        });
+        case 'SetCell': return errTo('SetCell', function (p) {
+          g('set_cell', [toInt(p.row) - 1, toInt(p.col) - 1, toInt(p.color)]);
+        });
+        case 'FillRegion': return errTo('FillRegion', function (p) {
+          g('fill_region', [toInt(p.r1) - 1, toInt(p.c1) - 1, toInt(p.r2) - 1, toInt(p.c2) - 1, toInt(p.color)]);
+        });
+        case 'ClearGrid': return errTo('ClearGrid', function (p) {
+          g('clear_grid', [toInt(p.color)]);
+        });
+        case 'DrawOutline': return errTo('DrawOutline', function (p) {
+          g('outline', [toInt(p.r1) - 1, toInt(p.c1) - 1, toInt(p.r2) - 1, toInt(p.c2) - 1, toInt(p.color)]);
+        });
+        case 'Checkerboard': return errTo('Checkerboard', function (p) {
+          g('checkerboard', [toInt(p.r1) - 1, toInt(p.c1) - 1, toInt(p.r2) - 1, toInt(p.c2) - 1, toInt(p.color1), toInt(p.color2)]);
+        });
+        case 'DrawBorder': return errTo('DrawBorder', function (p) {
+          g('border', [toInt(p.r1) - 1, toInt(p.c1) - 1, toInt(p.r2) - 1, toInt(p.c2) - 1, toInt(p.color), toInt(p.thickness)]);
+        });
+        case 'FillCircle': return errTo('FillCircle', function (p) {
+          g('fill_circle', [toInt(p.centerRow) - 1, toInt(p.centerCol) - 1, toInt(p.radius), toInt(p.color)]);
+        });
+        case 'DrawLine': return errTo('DrawLine', function (p) {
+          g('fill_line', [toInt(p.r1) - 1, toInt(p.c1) - 1, toInt(p.r2) - 1, toInt(p.c2) - 1, toInt(p.color)]);
+        });
+        case 'FillGradient': return errTo('FillGradient', function (p) {
+          g('fill_gradient', [toInt(p.r1) - 1, toInt(p.c1) - 1, toInt(p.r2) - 1, toInt(p.c2) - 1, toInt(p.colorStart), toInt(p.colorEnd)]);
+        });
+        case 'GridOverlayOn': return function () { eng.overlay = true; eng.out('[Gridly] Grid overlay ON'); };
+        case 'GridOverlayOff': return function () { eng.overlay = false; eng.out('[Gridly] Grid overlay OFF'); };
+      }
+    }
+    if (lib === 'gitfetch') {
+      function fetchToFile(p, dir) {
+        var url = String(p.url), path = String(dir);
+        var filename = url.indexOf('/') !== -1 ? url.split('/').pop() : 'download';
+        var savePath = (path === '.' ? './' : path.replace(/\/$/, '') + '/') + filename;
+        eng.out('Downloading: ' + url);
+        eng.out('Saving to:   ' + savePath);
+        if (typeof eng.fetchImpl === 'function') { eng.fetchImpl(url, savePath); return; }
+        eng.out('Download failed: network access is not available here');
+      }
+      switch (cmdName) {
+        case 'Fetch': return function (p) { fetchToFile(p, p.path); };
+        case 'FetchRaw': return function (p) { fetchToFile(p, '.'); };
+      }
+    }
+    return null;
+  };
+
+  /* native demo_utils.py (libraries/demo_utils.py from the release) */
+  Engine.prototype._demoUtilsModule = function () {
+    var eng = this;
+    return {
+      greet: function (name) {
+        var msg = 'Hello, ' + name + '! Welcome to FractalScript libraries.';
+        eng.out('[LIB:demo_utils] ' + msg);
+        return msg;
+      },
+      add: function (a, b) {
+        var result = a + b;
+        eng.out('[LIB:demo_utils] ' + a + ' + ' + b + ' = ' + result);
+        return result;
+      },
+      multiply: function (a, b) {
+        var result = a * b;
+        eng.out('[LIB:demo_utils] ' + a + ' \u00d7 ' + b + ' = ' + result);
+        return result;
+      },
+      circle_area: function (radius) {
+        var area = Math.PI * radius * radius;
+        eng.out('[LIB:demo_utils] circle_area(' + radius + ') = ' + area.toFixed(2));
+        return area;
+      },
+      roll_dice: function (sides) {
+        if (sides === undefined) sides = 6;
+        var result = 1 + Math.floor(Math.random() * sides);
+        eng.out('[LIB:demo_utils] rolled d' + sides + ' = ' + result);
+        return result;
+      }
+    };
+  };
+
+  Engine.prototype.callLib = function (libName, funcName, args) { /* library_handler.call */
+    var mod = this.pyLoaded[libName] || this.loadLibrary(libName);
+    if (mod === null || mod === undefined) { this.out("[LIB] Library '" + libName + "' not loaded"); return null; }
+    if (mod.info) { this.out("[LIB] '" + libName + "' is a .el command library — use commands directly"); return null; }
+    var fn = mod[funcName];
+    if (!fn) {
+      this.out("[LIB] Function '" + funcName + "' not found in '" + libName + "'");
+      var avail = [];
+      for (var k in mod) if (typeof mod[k] === 'function' && k.charAt(0) !== '_') avail.push(k);
+      this.out('  Available: ' + avail.join(', '));
+      return null;
+    }
+    try { return fn.apply(null, args); }
+    catch (e) { this.out("[LIB ERROR] '" + libName + '.' + funcName + "(" + args.join(', ') + ")': " + e.message); return null; }
+  };
+
+  /* ---------------- parsing: grid format (runner.translate_file) ---------------- */
+  function ParseAbort(msg) { this.msg = msg; }
+
+  Engine.prototype._gridLineActions = function (line, ctx) { /* returns true if handled */
+    var eng = this, m;
+
+    m = /^if\s*\(\[keyboard\]\s*\{press\}\s*=\s*(\w+)\)\s*\{/.exec(line);
+    if (m) {
+      var chain = { type: 'if_chain', blocks: [{ type: 'if_key', key: m[1].toLowerCase(), actions: [] }] };
+      eng.loopBlocks[ctx.currentLoop].actions.push(chain);
+      ctx.currentChain = chain; ctx.inBlock = 'if_chain';
+      return true;
+    }
+    m = /^\}?\s*else-if \(\[keyboard\]\s*\{press\}\s*=\s*(\w+)\)\s*\{/.exec(line);
+    if (m) {
+      if (ctx.currentChain !== null) ctx.currentChain.blocks.push({ type: 'elseif_key', key: m[1].toLowerCase(), actions: [] });
+      ctx.inBlock = 'if_chain';
+      return true;
+    }
+    if (/^\}?\s*else\s*\{/.test(line)) {
+      if (ctx.currentChain !== null) ctx.currentChain.blocks.push({ type: 'else', actions: [] });
+      ctx.inBlock = 'if_chain';
+      return true;
+    }
+    if (line === '}') { ctx.inBlock = null; return true; }
+
+    m = /^set\s*\(Var\[(\w+)\]\s*\{(.+?)\}\)/.exec(line);
+    if (m) {
+      var vn = m[1], op = m[2];
+      var varAction = function () {
+        if (op === 'create') { if (!(vn in eng.variables)) eng.variables[vn] = 0; }
+        else if (op.indexOf('add(') === 0) eng.variables[vn] = (eng.variables[vn] || 0) + toInt(op.slice(4, -1));
+        else if (op.indexOf('rem(') === 0) eng.variables[vn] = (eng.variables[vn] || 0) - toInt(op.slice(4, -1));
+        else if (op.indexOf('set(') === 0) eng.variables[vn] = toInt(op.slice(4, -1));
+      };
+      eng._appendGridAction(ctx, varAction);
+      return true;
+    }
+
+    m = /^set\s*\(Grid\[r(\d+),\s*c(\d+)\]\s*\{(.+?)\}\)/.exec(line);
+    if (m) {
+      var r = parseInt(m[1], 10) - 1, c = parseInt(m[2], 10) - 1, val = m[3];
+      var action;
+      if (/^[-+]?\d+$/.test(val.trim())) {
+        var vv = toInt(val);
+        action = function () { eng._setCell(r, c, vv); eng.drawFrame(); };
+      } else {
+        /* image cell — desktop only; the browser playground has no filesystem */
+        if (!eng._imgWarned) {
+          eng.warn('[PG] Image cells (set (Grid[r,c] {"path"})) load files from disk and only work in the desktop runtime — skipped in the browser.');
+          eng._imgWarned = true;
+        }
+        return true; /* runner.py silently skips the failed image load */
+      }
+      eng._appendGridAction(ctx, action);
+      return true;
+    }
+
+    m = /^set\s*\(Grid\[r(\d+),\s*c(\d+),\s*r(\d+),\s*c(\d+)\]\s*\{(\d+)\}\)/.exec(line);
+    if (m) {
+      var r1 = parseInt(m[1], 10), c1 = parseInt(m[2], 10), r2 = parseInt(m[3], 10), c2 = parseInt(m[4], 10), rv = parseInt(m[5], 10);
+      var regionAction = function () {
+        for (var rr = r1 - 1; rr < r2; rr++) {
+          for (var cc = c1 - 1; cc < c2; cc++) {
+            if (typeof eng.grid[rr][cc] === 'number') eng.grid[rr][cc] = rv;
+          }
+        }
+        eng.drawFrame();
+      };
+      eng._appendGridAction(ctx, regionAction);
+      return true;
+    }
+
+    m = /^call\s*\(\s*Lib\[(\w+)\]\s*\{([^}]+)\}\s*\)/.exec(line);
+    if (m) {
+      var parts = parseLibCallArgs(m[2].trim());
+      if (!parts.length) return true;
+      var fn = parts[0], fargs = parts.slice(1), lib = m[1];
+      var libAction = function () { eng.callLib(lib, fn, fargs); };
+      eng._appendGridAction(ctx, libAction);
+      return true;
+    }
+
+    /* .el registered commands (deferred actions) */
+    if (eng.registeredCommands.length) {
+      for (var i = 0; i < eng.registeredCommands.length; i++) {
+        var cmd = eng.registeredCommands[i];
+        var params = extractParams(cmd.syntax, line);
+        if (params !== null) {
+          var elAction = (function (cm, pp) {
+            return function () {
+              if (cm.impl) { cm.impl(pp); return; }
+              eng.out("[CMD ERROR] In command '" + cm.name + "': not available in the browser playground");
+            };
+          })(cmd, params);
+          eng._appendGridAction(ctx, elAction);
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  Engine.prototype._appendGridAction = function (ctx, fn) {
+    if (ctx.inBlock === 'if_chain' && ctx.currentChain !== null) {
+      ctx.currentChain.blocks[ctx.currentChain.blocks.length - 1].actions.push(fn);
+    } else {
+      this.loopBlocks[ctx.currentLoop].actions.push({ type: 'action', action: fn });
+    }
+  };
+
+  Engine.prototype._setCell = function (r, c, v) {
+    var row = this.grid[r].slice(0, c), tail = this.grid[r].slice(c + 1);
+    this.grid[r] = row.concat([v], tail);
+  };
+
+  /* ---------------- parsing: text format (translator.translate_file) ---------------- */
+  Engine.prototype._textParseLoopBody = function (lines) {
+    var blocks = [];
+    var st = { inIfChain: false };
+    for (var i = 0; i < lines.length; i++) {
+      this._textParseLine(lines[i], blocks, st);
+    }
+    return blocks;
+  };
+
+  /* Parse one loop-body line — a separate call per line so each action
+     closure captures its own values (translator.py binds per line). */
+  Engine.prototype._textParseLine = function (line, blocks, st) {
+    var eng = this, m;
+
+    m = /^if\s*\(\[keyboard\]\s*\{press\}\s*=\s*(\w+)\)\s*\{/.exec(line);
+    if (m) {
+      blocks.push({ type: 'if_chain', blocks: [{ type: 'if_key', key: m[1].toLowerCase(), actions: [] }] });
+      st.inIfChain = true;
+      return;
+    }
+    /* translator.py documents `if ([Var] {Name} = VALUE)` in the README;
+       implemented with the documented spelling */
+    m = /^if\s*\(\[Var\]\s*\{(\w+)\}\s*=\s*(-?\d+)\)\s*\{/.exec(line);
+    if (m) {
+      blocks.push({ type: 'if_chain', blocks: [{ type: 'if_var', var: m[1], value: parseInt(m[2], 10), actions: [] }] });
+      st.inIfChain = true;
+      return;
+    }
+    m = /^\} else-if \(\[keyboard\]\s*\{press\}\s*=\s*(\w+)\)\s*\{/.exec(line);
+    if (m) {
+      if (!blocks.length || blocks[blocks.length - 1].type !== 'if_chain') throw new ParseAbort('Error: else-if without matching if');
+      blocks[blocks.length - 1].blocks.push({ type: 'elseif_key', key: m[1].toLowerCase(), actions: [] });
+      return;
+    }
+    if (line.indexOf('} else {') === 0) {
+      if (!blocks.length || blocks[blocks.length - 1].type !== 'if_chain') throw new ParseAbort('Error: else without matching if');
+      blocks[blocks.length - 1].blocks.push({ type: 'else', actions: [] });
+      return;
+    }
+    if (line === '}') { st.inIfChain = false; return; }
+
+    m = /^set\s*\(Var\[(\w+)\]\s*\{(.+?)\}\)/.exec(line);
+    if (m) {
+      var vn = m[1], op = m[2];
+      var varAction = function () {
+        if (op === 'create') { if (!(vn in eng.variables)) eng.variables[vn] = 0; }
+        else if (op.indexOf('add(') === 0) { try { eng.variables[vn] = (eng.variables[vn] || 0) + toInt(op.slice(4, -1)); } catch (e) {} }
+        else if (op.indexOf('rem(') === 0) { try { eng.variables[vn] = (eng.variables[vn] || 0) - toInt(op.slice(4, -1)); } catch (e) {} }
+        else if (op.indexOf('set(') === 0) { try { eng.variables[vn] = toInt(op.slice(4, -1)); } catch (e) {} }
+      };
+      eng._appendTextAction(blocks, st.inIfChain, varAction);
+      return;
+    }
+
+    m = /^say\s*\("(.+?)"\)/.exec(line);
+    if (m) {
+      var msg = m[1];
+      var sayAction = function () { eng._appendText(msg); };
+      eng._appendTextAction(blocks, st.inIfChain, sayAction);
+      return;
+    }
+
+    m = /^wait\((\d+)\)/.exec(line);
+    if (m) {
+      var ms = parseInt(m[1], 10);
+      var waitAction = function () {
+        eng.waitUntil = eng.now() + ms;
+        eng._waitPending = true;
+      };
+      eng._appendTextAction(blocks, st.inIfChain, waitAction);
+      return;
+    }
+
+    m = /^call\s*\(\s*Lib\[(\w+)\]\s*\{([^}]+)\}\s*\)/.exec(line);
+    if (m) {
+      var parts = parseLibCallArgs(m[2].trim());
+      if (!parts.length) return;
+      var fn = parts[0], fargs = parts.slice(1), lib = m[1];
+      var libAction = function () { eng.callLib(lib, fn, fargs); };
+      eng._appendTextAction(blocks, st.inIfChain, libAction);
+      return;
+    }
+
+    if (eng.registeredCommands.length) {
+      for (var j = 0; j < eng.registeredCommands.length; j++) {
+        var cmd = eng.registeredCommands[j];
+        var params = extractParams(cmd.syntax, line);
+        if (params !== null) {
+          var elAction = (function (cm, pp) {
+            return function () {
+              if (cm.impl) { cm.impl(pp); return; }
+              eng.out("[CMD ERROR] In command '" + cm.name + "': not available in the browser playground");
+            };
+          })(cmd, params);
+          eng._appendTextAction(blocks, st.inIfChain, elAction);
+          return;
+        }
+      }
+    }
+    /* translator.py silently ignores unknown lines */
+  };
+
+  Engine.prototype._appendTextAction = function (blocks, inIfChain, fn) {
+    if (blocks.length && blocks[blocks.length - 1].type === 'if_chain' && inIfChain) {
+      blocks[blocks.length - 1].blocks[blocks[blocks.length - 1].blocks.length - 1].actions.push(fn);
+    } else {
+      blocks.push({ type: 'action', action: fn });
+    }
+  };
+
+  Engine.prototype._appendText = function (msg) { /* translator.append_text */
+    var repl = function (m0, m1) { return String(this.variables[m1] !== undefined ? this.variables[m1] : 0); }.bind(this);
+    msg = msg.replace(/\|\|\[Var\]\s*\{(.+?)\}\|\|/g, function (all, name) {
+      return String(this.variables[name] !== undefined ? this.variables[name] : 0);
+    }.bind(this));
+    this.textLines = [msg];
+    this._lastSay = msg;
+    try { this.onLine('say', msg); } catch (e) {}
+  };
+
+  /* ---------------- load (translate_file for both engines) ---------------- */
+  Engine.prototype.load = function (src) {
+    this.resetState();
+    this.printBanner();
+    if (!this.mode) this.mode = Engine.detectMode(src);
+    var ok = true;
+    try {
+      if (this.mode === 'text') this._loadText(src);
+      else this._loadGrid(src);
+    } catch (e) {
+      if (e instanceof ParseAbort) { this.err(e.msg); }
+      else { this.err('Error: ' + e.message); }
+      ok = false;
+    }
+    /* runner.__main__ / translator: open loops are fatal, but only checked
+       when translate_file itself returned normally (parse errors exit first) */
+    if (ok) {
+      for (var name in this.loopBlocks) {
+        if (this.loopBlocks[name].open) {
+          this.err(this.mode === 'text'
+            ? "Error: loop '" + name + "' missing end marker"
+            : 'Error: loop-' + name + ' missing loop-' + name + '-end!');
+          ok = false;
+        }
+      }
+    }
+    if (this.mode === 'text') this._frameInterval = 1000 / 30;
+    return { ok: ok, mode: this.mode };
+  };
+
+  Engine.prototype.resetState = function () {
+    this.consoleLines = [];
+    this.variables = {};
+    this.loopBlocks = {};
+    this.grid = []; this.gridW = 0; this.gridH = 0;
+    this.cellSize = 40;
+    this.overlay = false;
+    this.textLines = []; this._lastSay = undefined;
+    this.frameCount = 0;
+    this.held = {}; this.keyHoldTimes = {}; this.keyStates = {};
+    this.waitUntil = 0; this.resume = null; this._waitPending = false;
+    this.registeredCommands = []; this.loadedLibs = [];
+    this.elLoaded = {}; this.pyLoaded = {};
+    this.overrides = [];
+    this._lastFrame = -1; this._imgWarned = false; this._err = null; this._halted = false;
+  };
+
+  Engine.prototype._loadGrid = function (src) {
+    var eng = this;
+    var lines = src.split(/\r\n|\r|\n/);
+    var ctx = { currentLoop: null, inBlock: null, currentChain: null };
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line || line.indexOf('//') === 0) continue;
+      if (line.charAt(line.length - 1) === '.') line = line.slice(0, -1);
+
+      if (line.indexOf('import ') === 0) { eng.doImport(line.slice(7).trim()); continue; }
+
+      var mg = /^Grid\((\d+),\s*(\d+)\)/.exec(line);
+      if (mg) {
+        var w = parseInt(mg[1], 10), h = parseInt(mg[2], 10);
+        if (w > eng.maxGrid || h > eng.maxGrid) {
+          eng.warn('[PG] Playground cap: grid limited to ' + eng.maxGrid + '\u00d7' + eng.maxGrid + ' — requested ' + w + '\u00d7' + h + '.');
+          if (w > eng.maxGrid) w = eng.maxGrid;
+          if (h > eng.maxGrid) h = eng.maxGrid;
+        }
+        eng._makeGrid(w, h);
+        continue;
+      }
+
+      if (line.indexOf('loop-') === 0 && line.slice(-4) !== '-end') {
+        var name = line.slice(5);
+        if (name in eng.loopBlocks && eng.loopBlocks[name].open) throw new ParseAbort('Error: loop-' + name + ' already open!');
+        eng.loopBlocks[name] = { actions: [], open: true };
+        ctx.currentLoop = name;
+        continue;
+      }
+      if (line.indexOf('loop-') === 0 && line.slice(-4) === '-end') {
+        var name2 = line.slice(5, -4);
+        if (!(name2 in eng.loopBlocks) || !eng.loopBlocks[name2].open) throw new ParseAbort('Error: loop-' + name2 + '-end without matching start!');
+        eng.loopBlocks[name2].open = false;
+        ctx.currentLoop = null;
+        continue;
+      }
+
+      if (ctx.currentLoop === null) throw new ParseAbort('Error: code outside of loop: ' + line);
+      if (!eng._gridLineActions(line, ctx)) eng.warn('Warning: Unknown command: ' + line);
+    }
+  };
+
+  Engine.prototype._makeGrid = function (w, h) {
+    this.grid = [];
+    for (var r = 0; r < h; r++) {
+      var row = [];
+      for (var c = 0; c < w; c++) row.push(0);
+      this.grid.push(row);
+    }
+    this.gridW = w; this.gridH = h;
+  };
+
+  Engine.prototype._loadText = function (src) {
+    var eng = this;
+    var lines = src.split(/\r\n|\r|\n/);
+    var raw = [];
+    for (var i = 0; i < lines.length; i++) {
+      var s = lines[i].trim();
+      if (!s) continue;
+      if (s.indexOf('//') === 0) continue;
+      if (s.charAt(s.length - 1) === '.') s = s.slice(0, -1);
+      raw.push(s);
+    }
+    var i2 = 0;
+    while (i2 < raw.length) {
+      var line = raw[i2];
+      if (line.indexOf('import ') === 0) { eng.doImport(line.slice(7).trim()); i2++; continue; }
+      if (line === 'Text') { i2++; continue; }
+      if (line.indexOf('loop-') === 0 && line.slice(-4) !== '-end') {
+        var loopName = line.split('loop-')[1];
+        var loopLines = [];
+        i2++;
+        while (i2 < raw.length && raw[i2] !== 'loop-' + loopName + '-end') {
+          loopLines.push(raw[i2]); i2++;
+        }
+        if (i2 >= raw.length || raw[i2] !== 'loop-' + loopName + '-end') {
+          throw new ParseAbort("Error: loop '" + loopName + "' missing end marker");
+        }
+        /* translator.py stores the parsed block list directly; wrap it so
+           both engines share the {actions:[...]} frame-loop shape */
+        eng.loopBlocks[loopName] = { actions: eng._textParseLoopBody(loopLines) };
+        i2++;
+        continue;
+      }
+      if (line.slice(-4) === '-end' && line.indexOf('loop-') === 0) {
+        throw new ParseAbort("Error: unexpected end marker '" + line + "'");
+      }
+      i2++;
+    }
+  };
+
+  /* ---------------- overrides (runner._apply_overrides) ---------------- */
+  Engine.prototype._applyOverrides = function () {
+    var eng = this;
+    if (!eng.overrides.length) return;
+    var ops = eng.overrides.slice();
+    eng.overrides = [];
+    var resized = false;
+    for (var i = 0; i < ops.length; i++) {
+      var key = ops[i].key, val = ops[i].value;
+      if (key === 'cell_size') { eng.cellSize = toInt(val); resized = true; }
+      else if (key === 'set_cell') {
+        var r = toInt(val[0]), c = toInt(val[1]), col = toInt(val[2]);
+        if (r >= 0 && r < eng.grid.length && c >= 0 && c < eng.grid[0].length) eng.grid[r][c] = col;
+      }
+      else if (key === 'fill_region') {
+        var r1 = toInt(val[0]), c1 = toInt(val[1]), r2 = toInt(val[2]), c2 = toInt(val[3]), col2 = toInt(val[4]);
+        eng._forBox(r1, c1, r2, c2, function (rr, cc) { eng.grid[rr][cc] = col2; });
+      }
+      else if (key === 'clear_grid') {
+        var colC = val.length ? toInt(val[0]) : 0;
+        for (var rr2 = 0; rr2 < eng.grid.length; rr2++)
+          for (var cc2 = 0; cc2 < eng.grid[0].length; cc2++) eng.grid[rr2][cc2] = colC;
+      }
+      else if (key === 'outline') {
+        var r3 = toInt(val[0]), c3 = toInt(val[1]), r4 = toInt(val[2]), c4 = toInt(val[3]), col3 = toInt(val[4]);
+        eng._forBox(r3, c3, r4, c4, function (rr, cc) {
+          if (rr === r3 || rr === r4 || cc === c3 || cc === c4) eng.grid[rr][cc] = col3;
+        });
+      }
+      else if (key === 'checkerboard') {
+        var r5 = toInt(val[0]), c5 = toInt(val[1]), r6 = toInt(val[2]), c6 = toInt(val[3]);
+        var ca = toInt(val[4]), cb = toInt(val[5]);
+        eng._forBox(r5, c5, r6, c6, function (rr, cc) {
+          eng.grid[rr][cc] = ((rr + cc) % 2 === 0) ? ca : cb;
+        });
+      }
+      else if (key === 'border') {
+        var r7 = toInt(val[0]), c7 = toInt(val[1]), r8 = toInt(val[2]), c8 = toInt(val[3]);
+        var colB = toInt(val[4]), th = toInt(val[5]);
+        eng._forBox(r7, c7, r8, c8, function (rr, cc) {
+          var edge = (rr - r7 < th) || (r8 - rr < th) || (cc - c7 < th) || (c8 - cc < th);
+          if (edge) eng.grid[rr][cc] = colB;
+        });
+      }
+      else if (key === 'fill_circle') {
+        var cr = toInt(val[0]), ccx = toInt(val[1]), rad = toInt(val[2]), colR = toInt(val[3]);
+        for (var rr7 = Math.max(0, cr - rad); rr7 <= Math.min(eng.grid.length - 1, cr + rad); rr7++) {
+          for (var cc7 = Math.max(0, ccx - rad); cc7 <= Math.min(eng.grid[0].length - 1, ccx + rad); cc7++) {
+            if ((rr7 - cr) * (rr7 - cr) + (cc7 - ccx) * (cc7 - ccx) <= rad * rad) eng.grid[rr7][cc7] = colR;
+          }
+        }
+      }
+      else if (key === 'fill_line') {
+        var lr1 = toInt(val[0]), lc1 = toInt(val[1]), lr2 = toInt(val[2]), lc2 = toInt(val[3]), colL = toInt(val[4]);
+        var steps = Math.max(Math.abs(lr2 - lr1), Math.abs(lc2 - lc1), 1);
+        for (var s = 0; s <= steps; s++) {
+          var t = s / steps;
+          var rr8 = Math.trunc(lr1 + (lr2 - lr1) * t);
+          var cc8 = Math.trunc(lc1 + (lc2 - lc1) * t);
+          if (rr8 >= 0 && rr8 < eng.grid.length && cc8 >= 0 && cc8 < eng.grid[0].length) eng.grid[rr8][cc8] = colL;
+        }
+      }
+      else if (key === 'fill_gradient') {
+        var gr1 = toInt(val[0]), gc1 = toInt(val[1]), gr2 = toInt(val[2]), gc2 = toInt(val[3]);
+        var cs = COLORS[toInt(val[4])] || [0, 0, 0];
+        var ce = COLORS[toInt(val[5])] || [255, 255, 255];
+        var rows = Math.max(1, gr2 - gr1);
+        for (var rr9 = Math.max(0, gr1); rr9 <= Math.min(eng.grid.length - 1, gr2); rr9++) {
+          var tt = (rr9 - gr1) / rows;
+          var rc = Math.trunc(cs[0] + (ce[0] - cs[0]) * tt);
+          var gc = Math.trunc(cs[1] + (ce[1] - cs[1]) * tt);
+          var bc = Math.trunc(cs[2] + (ce[2] - cs[2]) * tt);
+          for (var cc9 = Math.max(0, gc1); cc9 <= Math.min(eng.grid[0].length - 1, gc2); cc9++) {
+            eng.grid[rr9][cc9] = [rc, gc, bc];
+          }
+        }
+      }
+    }
+    if (resized && eng.grid.length) eng.drawFrame();
+  };
+
+  Engine.prototype._forBox = function (r1, c1, r2, c2, fn) {
+    for (var rr = Math.max(0, r1); rr <= Math.min(this.grid.length - 1, r2); rr++) {
+      for (var cc = Math.max(0, c1); cc <= Math.min(this.grid[0].length - 1, c2); cc++) fn(rr, cc);
+    }
+  };
+
+  Engine.prototype.drawFrame = function () { /* draw_grid — the page renders from state */
+    try { this.onLine('draw', ''); } catch (e) {}
+  };
+
+  /* ---------------- frame loop (runner._default_run_loops / translator.run_loops) ---------------- */
+  Engine.prototype.start = function () { this.running = true; };
+  Engine.prototype.stop = function () { this.running = false; };
+
+  Engine.prototype.tick = function (nowMs) {
+    if (!this.running) return false;
+    if (this._lastFrame < 0) this._lastFrame = nowMs;
+    var ran = false, guard = 0;
+    while (nowMs - this._lastFrame >= this._frameInterval && guard < 3) {
+      this._lastFrame += this._frameInterval;
+      this._runFrame(this._lastFrame);
+      ran = true;
+      guard++;
+      if (!this.running) break;
+    }
+    return ran;
+  };
+
+  Engine.prototype._runFrame = function (nowMs) {
+    var eng = this;
+    if (eng._halted) return;
+    if (eng.mode === 'grid') eng._applyOverrides();
+
+    /* wait() support (text mode): translator.py blocks the whole frame loop */
+    if (eng._waitPending) {
+      if (nowMs < eng.waitUntil) { eng.frameCount++; return; }
+      eng._waitPending = false;
+      var cont = eng.resume;
+      eng.resume = null;
+      eng._execLoops(Object.keys(eng.loopBlocks), cont, nowMs);
+      eng.frameCount++;
+      return;
+    }
+
+    eng._execLoops(Object.keys(eng.loopBlocks), null, nowMs);
+    eng.frameCount++;
+  };
+
+  /* Execute every loop's actions in order, exactly like the Python engines
+     iterate loop_blocks. `cont` resumes a frame interrupted by wait(). */
+  Engine.prototype._execLoops = function (names, cont, nowMs) {
+    var eng = this;
+    var li, ai, bi = null, a2 = 0;
+    if (cont) { li = cont.li; ai = cont.ai; bi = cont.bi; a2 = cont.a2 || 0; }
+    else { li = 0; ai = 0; }
+    var resumingBranch = (bi !== null && cont);
+    var firstLoop = true;
+
+    for (; li < names.length; li++) {
+      var acts = eng.loopBlocks[names[li]].actions;
+
+      if (resumingBranch) {
+        /* finish the remaining actions of the interrupted branch */
+        var chainR = acts[ai];
+        var blockR = chainR.blocks[bi];
+        for (; a2 < blockR.actions.length; a2++) {
+          try { blockR.actions[a2](); } catch (e) { eng._runtimeError(e); return; }
+          if (eng._waitPending) { eng.resume = { li: li, ai: ai, bi: bi, a2: a2 + 1 }; return; }
+        }
+        resumingBranch = false;
+        cont = null;
+        firstLoop = false;
+        ai = ai + 1;
+        for (; ai < acts.length; ai++) {
+          if (!eng._execOne(acts[ai], li, ai, nowMs)) return;
+        }
+        continue;
+      }
+
+      var begin = firstLoop ? ai : 0;
+      firstLoop = false;
+      for (ai = begin; ai < acts.length; ai++) {
+        if (!eng._execOne(acts[ai], li, ai, nowMs)) return;
+      }
+    }
+  };
+
+  /* Run one loop action; returns false when the frame was interrupted
+     (wait) or the program halted. */
+  Engine.prototype._execOne = function (act, li, ai, nowMs) {
+    var eng = this;
+    if (act.type === 'action') {
+      try { act.action(); } catch (e) { eng._runtimeError(e); return false; }
+      if (eng._waitPending) { eng.resume = { li: li, ai: ai + 1, bi: null, a2: 0 }; return false; }
+      return true;
+    }
+    /* if_chain — first matching block runs, at most one */
+    var executed = false;
+    for (var b = 0; b < act.blocks.length; b++) {
+      var block = act.blocks[b];
+      var runBlock = false, btype = block.type;
+      if (btype === 'if_key' || btype === 'elseif_key') {
+        var key = block.key;
+        if (isValidKey(key)) {
+          var pressed = !!eng.held[key];
+          if (eng.mode === 'grid') {
+            /* runner.py hold-repeat: fire on press, then after 0.50 s
+               repeat every 0.01 s */
+            var st = eng.keyHoldTimes[key] || [0, 0];
+            if (pressed) {
+              if (st[0] === 0) {
+                runBlock = true;
+                eng.keyHoldTimes[key] = [nowMs, nowMs];
+              } else if (nowMs - st[0] >= 500) {
+                if (nowMs - st[1] >= 10) {
+                  runBlock = true;
+                  eng.keyHoldTimes[key] = [st[0], nowMs];
+                }
+              }
+            } else {
+              eng.keyHoldTimes[key] = [0, 0];
+            }
+          } else {
+            /* translator.py edge trigger: fire once per press */
+            if (pressed) {
+              if (!eng.keyStates[key]) { runBlock = true; eng.keyStates[key] = true; }
+            } else {
+              eng.keyStates[key] = false;
+            }
+          }
+        }
+      } else if (btype === 'if_var') {
+        if ((eng.variables[block.var] !== undefined ? eng.variables[block.var] : 0) === block.value) runBlock = true;
+      } else if (btype === 'elseif_var') {
+        if (!executed && (eng.variables[block.var] !== undefined ? eng.variables[block.var] : 0) === block.value) runBlock = true;
+      } else if (btype === 'else') {
+        if (!executed) runBlock = true;
+      }
+      if (runBlock) {
+        executed = true;
+        for (var k = 0; k < block.actions.length; k++) {
+          try { block.actions[k](); } catch (e) { eng._runtimeError(e); return false; }
+          if (eng._waitPending) { eng.resume = { li: li, ai: ai, bi: b, a2: k + 1 }; return false; }
+        }
+        break;
+      }
+    }
+    return true;
+  };
+
+  Engine.prototype._runtimeError = function (e) {
+    this.err('Error: ' + (e && e.message ? e.message : String(e)));
+    this.running = false;
+    this._halted = true;
+  };
+
+  return Engine;
+}));
+</script>
+
+<script>
+/* FractalScript site — playground UI wiring on top of FSEngine (the verified
+ * port of runner.py / translator.py, embedded separately in this page). */
+(function () {
+  'use strict';
+
+  /* ---------- shipped example sources (verbatim from the release zip) ---------- */
+  var SHIPPED_GRID = [
+    '// using "//" makes the script ignore anything written there',
+    '// set the grid',
+    '// sets a 16x16 grid for the screen(not 16x16p just 16x16)',
+    'Grid(16, 16).',
+    '// "."can be used as an end of line',
+    '// start a loop',
+    '// writing "loop-[name]" starts a set loop',
+    'loop-IfRule',
+    '// check for a button keyboard press "F"',
+    'if ([keyboard] {press} = f) {',
+    '// "(" opens the "if" rules "[]" determines what the first rule is, or it tells the script where to look for a rule, "{}" is optional for setting a second rule, or it can be used for continuing the first location string',
+    '// set row 5 column 6 the the color red',
+    '// colors are determined with numbers (0-black 1-red 2-orange 3-yellow 4-lime 5-green 6-dark green 7-light blue 8-cyan 9-blue 10-dark blue 11-magenta 12-purple 13-dark pink 14-pink 15-light pink 16-dark gray 17-white',
+    'set (Grid[r5, c6] {1}).',
+    '// else strings are used for showing something if the if rule isn\'t used',
+    '// set the grid to show all grid locations as green',
+    '// if you set 4 locations on a "(Grid)" string it is used as a "from, to"',
+    '} else {',
+    'set (Grid[r1, c1, r16, c16] {5}).',
+    '}',
+    'loop-IfRule-end'
+  ].join('\n');
+
+  var SHIPPED_TEXT = [
+    '// set the format',
+    'Text',
+    '// set a loop',
+    'loop-ExampleVarAndPress',
+    '// add a new variable',
+    'set (Var[ZPress] {create}).',
+    '// set an "if" rule',
+    '// if Z is pressed it adds 1 to the variable',
+    'if ([keyboard] {press} = z) {',
+    '  set (Var[ZPress] {add(1)}).',
+    '// say the current amount of a specific Variable',
+    '// doing "||[Var {"Variable Name"}||" just shows the current amount of that exact variable',
+    '  say ("current ZPress count: ||[Var] {ZPress}||")',
+    '} else {',
+    '  set (Var[ZPress] {hold}).',
+    '}',
+    'loop-ExampleVarAndPress-end'
+  ].join('\n');
+
+  var SHIPPED_GRIDLY = [
+    '// Gridly Library Demo',
+    '// Press keys to see different grid features',
+    '',
+    'Grid(16, 16)',
+    'import gridly.el',
+    '',
+    'loop-GridlyDemo',
+    '  if ([keyboard] {press} = g) {',
+    '    FillGradient(1, 1, 16, 16, 7, 12)',
+    '  }',
+    '  else-if ([keyboard] {press} = c) {',
+    '    ClearGrid(0)',
+    '    Checkerboard(1, 1, 16, 16, 15, 16)',
+    '  }',
+    '  else-if ([keyboard] {press} = s) {',
+    '    ClearGrid(0)',
+    '    FillCircle(8, 8, 5, 4)',
+    '    DrawOutline(3, 3, 13, 13, 9)',
+    '    DrawBorder(1, 1, 16, 16, 15, 2)',
+    '    DrawLine(1, 1, 16, 16, 1)',
+    '  }',
+    '  else-if ([keyboard] {press} = x) {',
+    '    ClearGrid(0)',
+    '  }',
+    'loop-GridlyDemo-end'
+  ].join('\n');
+
+  var EXAMPLE_BARS = [
+    '// paint six bars from the fixed palette',
+    '// P paints, X clears',
+    'Grid(9, 6)',
+    '',
+    'loop-Bars',
+    '  if ([keyboard] {press} = p) {',
+    '    set (Grid[r1, c1, r1, c9] {1}).',
+    '    set (Grid[r2, c1, r2, c9] {3}).',
+    '    set (Grid[r3, c1, r3, c9] {4}).',
+    '    set (Grid[r4, c1, r4, c9] {9}).',
+    '    set (Grid[r5, c1, r5, c9] {11}).',
+    '    set (Grid[r6, c1, r6, c9] {17}).',
+    '  } else-if ([keyboard] {press} = x) {',
+    '    set (Grid[r1, c1, r6, c9] {0}).',
+    '  }',
+    'loop-Bars-end'
+  ].join('\n');
+
+  var EXAMPLE_COUNTER = [
+    '// a tiny text app: count S presses and celebrate ten',
+    'Text',
+    '',
+    'loop-Counter',
+    '  set (Var[Steps] {create}).',
+    '  if ([keyboard] {press} = s) {',
+    '    set (Var[Steps] {add(1)}).',
+    '    say ("Steps: ||[Var] {Steps}||").',
+    '  } else {',
+    '    set (Var[Steps] {hold}).',
+    '  }',
+    '  if ([Var] {Steps} = 10) {',
+    '    say ("Ten steps — milestone reached!").',
+    '    set (Var[Steps] {set(0)}).',
+    '  }',
+    'loop-Counter-end'
+  ].join('\n');
+
+  var EXAMPLES = {
+    grid_shipped: { src: SHIPPED_GRID, label: 'Grid example4FractalScript.ez' },
+    text_shipped: { src: SHIPPED_TEXT, label: 'Text example4FractalScript.ez' },
+    gridly_shipped: { src: SHIPPED_GRIDLY, label: 'Gridly-Library example4FractalScript.ez' },
+    bars: { src: EXAMPLE_BARS, label: 'color_bars.ez' },
+    counter: { src: EXAMPLE_COUNTER, label: 'step_counter.ez' }
+  };
+
+  /* ---------- generic page wiring ---------- */
+  var yearEl = document.querySelector('[data-year]');
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  var navToggle = document.querySelector('.nav-toggle');
+  var siteNav = document.getElementById('site-nav');
+  function closeNav() {
+    if (!siteNav || !navToggle) return;
+    siteNav.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }
+  if (navToggle && siteNav) {
+    navToggle.addEventListener('click', function () {
+      var open = siteNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    siteNav.addEventListener('click', function (e) { if (e.target.closest('a')) closeNav(); });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.site-nav') && !e.target.closest('.nav-toggle')) closeNav();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
+    window.addEventListener('resize', function () { if (window.innerWidth > 920) closeNav(); });
+  }
+
+  var siteHeader = document.querySelector('.site-header');
+  if (siteHeader) {
+    var onScroll = function () { siteHeader.classList.toggle('scrolled', window.scrollY > 8); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+  if ('IntersectionObserver' in window) {
+    var revealIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('revealed'); revealIO.unobserve(entry.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(function (el) { revealIO.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('revealed'); });
+  }
+
+  /* ---------- syntax highlighting for .ez sources ---------- */
+  var FS_TOKEN_RE = /("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')|(\bloop-|\b-end\b|\belse-if\b|\belse\b|\bif\b|\bset\b|\bsay\b|\bwait\b|\bimport\b|\bcall\b|\bText\b|\bGrid\b|\bVar\b|\bkeyboard\b|\bpress\b|\bLib\b|\bDef\b|\bCmd\b|\bSyntax\b|\bFunc\b|\bLibrary\.name\b|\bLibrary\.version\b|\bLibrary\.bypass\b|\bPackage\.identifier\b)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_][\w.-]*)|([{}()\[\],.=])|(\s+)|([^\s])/g;
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function highlight(src) {
+    var out = '', m, last = 0;
+    FS_TOKEN_RE.lastIndex = 0;
+    while ((m = FS_TOKEN_RE.exec(src)) !== null) {
+      if (m.index > last) out += escapeHtml(src.slice(last, m.index));
+      var text = m[0];
+      if (m[1] || m[2]) out += '<span class="tok-str">' + escapeHtml(text) + '</span>';
+      else if (m[3]) out += '<span class="tok-kw">' + escapeHtml(text) + '</span>';
+      else if (m[4]) out += '<span class="tok-num">' + escapeHtml(text) + '</span>';
+      else if (m[5] && /^(Grid|Text|Var|Lib|Def|Cmd)$/.test(text)) out += '<span class="tok-bi">' + escapeHtml(text) + '</span>';
+      else if (m[6]) out += '<span class="tok-var">' + escapeHtml(text) + '</span>';
+      else if (m[7]) out += '<span class="tok-op">' + escapeHtml(text) + '</span>';
+      else if (m[8]) out += escapeHtml(text);
+      else out += '<span class="tok-pn">' + escapeHtml(text) + '</span>';
+      last = m.index + text.length;
+      if (FS_TOKEN_RE.lastIndex === m.index) FS_TOKEN_RE.lastIndex++;
+    }
+    out += escapeHtml(src.slice(last));
+    return out;
+  }
+
+  /* static code windows */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-fs-code]'), function (el) {
+    if (el.hasAttribute('data-example-src')) return; /* filled from EXAMPLES below */
+    var src = el.textContent;
+    el.innerHTML = highlight(src);
+  });
+
+  /* example cards + playground select pull shipped sources from one place */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-example-src]'), function (el) {
+    var ex = EXAMPLES[el.getAttribute('data-example-src')];
+    if (ex) el.innerHTML = highlight(ex.src);
+  });
+
+  /* ---------- playground ---------- */
+  var editor = document.getElementById('pg-editor');
+  var gutter = document.getElementById('pg-gutter');
+  var hlCode = document.getElementById('pg-hl-code');
+  var canvas = document.getElementById('pg-canvas');
+  var textscreen = document.getElementById('pg-textscreen');
+  var screenIdle = document.getElementById('pg-screen-idle');
+  var screenEl = document.getElementById('pg-screen');
+  var screenMeta = document.getElementById('pg-screen-meta');
+  var consoleEl = document.getElementById('pg-console');
+  var varsEl = document.getElementById('pg-vars');
+  var engineEl = document.getElementById('pg-engine');
+  var pill = document.getElementById('pg-pill');
+  var pillText = document.getElementById('pg-pill-text');
+  var metaEl = document.getElementById('pg-meta');
+  var runBtn = document.getElementById('pg-run');
+  var stopBtn = document.getElementById('pg-stop');
+  var clearBtn = document.getElementById('pg-clear');
+  var clearConsoleBtn = document.getElementById('pg-clear-console');
+  var exampleSelect = document.getElementById('pg-example');
+  if (!editor) return; /* playground not present */
+
+  var ctx2d = canvas.getContext('2d');
+  var engine = null;
+  var rafId = 0;
+  var lastPanelUpdate = 0;
+  var consoleCount = 0;
+  var CONSOLE_MAX = 500;
+
+  function setPill(state, text) {
+    pill.className = 'status-pill' + (state ? ' ' + state : '');
+    pillText.textContent = text;
+  }
+
+  function renderEditor() {
+    var lines = editor.value.split('\n');
+    var nums = '';
+    for (var i = 1; i <= lines.length; i++) nums += i + '\n';
+    gutter.textContent = nums;
+    hlCode.innerHTML = highlight(editor.value) + '\n';
+  }
+  editor.addEventListener('input', renderEditor);
+  editor.addEventListener('scroll', function () {
+    gutter.scrollTop = editor.scrollTop;
+    document.getElementById('pg-hl').scrollTop = editor.scrollTop;
+    document.getElementById('pg-hl').scrollLeft = editor.scrollLeft;
+  });
+
+  function consoleLine(cls, text) {
+    if (consoleCount >= CONSOLE_MAX) return;
+    var d = document.createElement('div');
+    d.className = 'cl-line ' + cls;
+    d.textContent = text;
+    consoleEl.appendChild(d);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+    consoleCount++;
+  }
+
+  function clearConsole() {
+    consoleEl.innerHTML = '';
+    consoleCount = 0;
+  }
+
+  function stopEngine() {
+    if (rafId) { window.cancelAnimationFrame(rafId); rafId = 0; }
+    if (engine) engine.stop();
+    engine = null;
+    runBtn.disabled = false;
+    stopBtn.disabled = true;
+    screenEl.classList.remove('focused');
+  }
+
+  function drawGrid() {
+    if (!engine || engine.mode !== 'grid') return;
+    var cols = engine.gridW, rows = engine.gridH;
+    if (!cols || !rows) return;
+    var maxSide = 1100;
+    var cell = Math.max(4, Math.min(engine.cellSize, Math.floor(maxSide / Math.max(cols, rows))));
+    var w = cols * cell, h = rows * cell;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    ctx2d.fillStyle = '#000';
+    ctx2d.fillRect(0, 0, w, h);
+    for (var r = 0; r < rows; r++) {
+      var row = engine.grid[r];
+      for (var c = 0; c < cols; c++) {
+        var v = row[c];
+        if (typeof v === 'number') {
+          var col = FSEngine.COLORS[v] || [255, 255, 255];
+          ctx2d.fillStyle = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
+          ctx2d.fillRect(c * cell, r * cell, cell, cell);
+        } else if (v && v.length === 3) {
+          ctx2d.fillStyle = 'rgb(' + v[0] + ',' + v[1] + ',' + v[2] + ')';
+          ctx2d.fillRect(c * cell, r * cell, cell, cell);
+        }
+        if (engine.overlay) {
+          ctx2d.strokeStyle = 'rgb(50,50,50)';
+          ctx2d.lineWidth = 1;
+          ctx2d.strokeRect(c * cell + 0.5, r * cell + 0.5, cell - 1, cell - 1);
+        }
+      }
+    }
+    canvas.style.display = 'block';
+    textscreen.style.display = 'none';
+  }
+
+  function drawTextScreen() {
+    if (!engine || engine.mode !== 'text') return;
+    var lines = engine.textLines;
+    textscreen.textContent = lines.length ? lines[lines.length - 1] : '';
+    textscreen.style.display = 'block';
+    canvas.style.display = 'none';
+  }
+
+  function frame() {
+    if (!engine) return;
+    engine.tick(window.performance.now());
+    if (engine.mode === 'grid') drawGrid(); else drawTextScreen();
+    var now = window.performance.now();
+    if (now - lastPanelUpdate > 150) {
+      lastPanelUpdate = now;
+      updatePanels();
+      if (engine && !engine.running) {
+        /* engine halted itself (runtime error) */
+        setPill('error', 'Error — execution stopped');
+        stopBtn.disabled = true;
+        rafId = 0;
+        engine = null;
+        return;
+      }
+    }
+    if (engine) rafId = window.requestAnimationFrame(frame);
+  }
+
+  function updatePanels() {
+    if (!engine) return;
+    var names = Object.keys(engine.variables);
+    if (!names.length) {
+      varsEl.innerHTML = '<div class="panel-empty">no variables yet</div>';
+    } else {
+      var html = '';
+      for (var i = 0; i < names.length; i++) {
+        html += '<div class="var-row"><span class="var-name">' + escapeHtml(names[i]) +
+          '</span><span class="var-val">' + escapeHtml(String(engine.variables[names[i]])) + '</span></div>';
+      }
+      varsEl.innerHTML = html;
+    }
+    var engHtml = '';
+    function row(k, v) { engHtml += '<div class="eng-row"><span class="eng-key">' + k + '</span><span class="eng-val">' + escapeHtml(v) + '</span></div>'; }
+    row('format', engine.mode === 'grid' ? 'Grid (60 fps)' : 'Text (30 fps)');
+    if (engine.mode === 'grid') {
+      row('grid', engine.gridW + '\u00d7' + engine.gridH);
+      row('cell size', engine.cellSize + ' px' + (engine.overlay ? ' · overlay on' : ''));
+    }
+    row('loops', String(Object.keys(engine.loopBlocks).length));
+    row('frame', String(engine.frameCount));
+    row('libraries', engine.loadedLibs.length ? engine.loadedLibs.join(', ') : 'none');
+    engineEl.innerHTML = engHtml;
+    if (engine.mode === 'grid') screenMeta.textContent = engine.gridW + '\u00d7' + engine.gridH + ' · cell ' + engine.cellSize + 'px';
+    else screenMeta.textContent = 'text mode · 30 fps';
+    if (engine.running) setPill('run', 'Running · frame ' + engine.frameCount);
+  }
+
+  function runProgram() {
+    stopEngine();
+    clearConsole();
+    screenIdle.style.display = 'none';
+    textscreen.textContent = '';
+    lastPanelUpdate = 0;
+
+    var eng = new FSEngine({
+      now: function () { return window.performance.now(); },
+      onLine: function (type, text) {
+        if (type === 'draw' || type === 'say') {
+          if (type === 'say') consoleLine('cl-info', '[screen] ' + text);
+          return;
+        }
+        if (type === 'error') consoleLine('cl-err', text);
+        else if (type === 'warn') consoleLine('cl-halt', text);
+        else consoleLine('cl-out', text);
+      }
+    });
+    var res = eng.load(editor.value);
+    engine = eng;
+
+    if (!res.ok) {
+      setPill('error', 'Error — program did not start');
+      canvas.style.display = 'none';
+      textscreen.style.display = 'none';
+      screenIdle.style.display = 'block';
+      screenMeta.textContent = '';
+      updatePanelsIdle();
+      return;
+    }
+
+    eng.start();
+    runBtn.disabled = true;
+    stopBtn.disabled = false;
+    setPill('run', 'Running');
+    var listened = keysInSource(editor.value);
+    metaEl.textContent = res.mode === 'grid'
+      ? 'Grid engine (runner.py port) · ' + eng.gridW + '\u00d7' + eng.gridH
+      : 'Text engine (translator.py port)';
+    if (listened.length) metaEl.textContent += ' · listening on keys: ' + listened.join(', ');
+    screenEl.classList.add('focused');
+    screenEl.focus({ preventScroll: true });
+    rafId = window.requestAnimationFrame(frame);
+  }
+
+  function updatePanelsIdle() {
+    varsEl.innerHTML = '<div class="panel-empty">no variables yet</div>';
+    engineEl.innerHTML = '<div class="panel-empty">no program running</div>';
+  }
+
+  function keysInSource(src) {
+    var found = {}, re = /\[keyboard\]\s*\{press\}\s*=\s*(\w+)/g, m;
+    while ((m = re.exec(src)) !== null) {
+      if (FSEngine.isValidKey(m[1].toLowerCase())) found[m[1].toLowerCase()] = true;
+    }
+    return Object.keys(found);
+  }
+
+  /* keyboard capture on the program screen */
+  function updateHeld(e, down) {
+    var tok = FSEngine.keyTokenFromEvent(e);
+    if (!tok) return;
+    if (engine) {
+      if (down) {
+        if (tok.length === 1 || e.key === ' ') e.preventDefault();
+        engine.held[tok] = true;
+      } else {
+        delete engine.held[tok];
+      }
+    }
+  }
+  screenEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { stopEngine(); setPill('stopped', 'Stopped'); return; }
+    updateHeld(e, true);
+  });
+  screenEl.addEventListener('keyup', function (e) { updateHeld(e, false); });
+  screenEl.addEventListener('blur', function () {
+    if (engine) engine.held = {};
+  });
+
+  runBtn.addEventListener('click', runProgram);
+  stopBtn.addEventListener('click', function () {
+    stopEngine();
+    setPill('stopped', 'Stopped');
+    if (engine === null) updatePanelsIdle();
+  });
+  clearBtn.addEventListener('click', function () {
+    stopEngine();
+    editor.value = '';
+    renderEditor();
+    clearConsole();
+    canvas.style.display = 'none';
+    textscreen.style.display = 'none';
+    screenIdle.style.display = 'block';
+    screenMeta.textContent = '';
+    metaEl.textContent = '';
+    setPill('idle', 'Idle');
+    updatePanelsIdle();
+  });
+  clearConsoleBtn.addEventListener('click', clearConsole);
+  editor.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runProgram(); }
+  });
+
+  function loadExample(id) {
+    var ex = EXAMPLES[id];
+    if (!ex) return;
+    stopEngine();
+    editor.value = ex.src;
+    renderEditor();
+    clearConsole();
+    canvas.style.display = 'none';
+    textscreen.style.display = 'none';
+    screenIdle.style.display = 'block';
+    screenMeta.textContent = '';
+    metaEl.textContent = 'Loaded ' + ex.label + ' — press Run';
+    setPill('idle', 'Idle');
+    updatePanelsIdle();
+    editor.scrollTop = 0;
+  }
+  exampleSelect.addEventListener('change', function () {
+    if (exampleSelect.value) loadExample(exampleSelect.value);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-load-example]'), function (btn) {
+    btn.addEventListener('click', function () {
+      loadExample(btn.getAttribute('data-load-example'));
+      document.getElementById('playground').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      var sel = exampleSelect;
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === btn.getAttribute('data-load-example')) { sel.selectedIndex = i; break; }
+      }
+    });
+  });
+
+  /* default content */
+  editor.value = EXAMPLES.grid_shipped.src;
+  renderEditor();
+  updatePanelsIdle();
+  setPill('idle', 'Idle');
+})();
+</script>
+</body>
+</html>
